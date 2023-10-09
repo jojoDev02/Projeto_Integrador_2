@@ -14,9 +14,12 @@ CREATE TABLE Usuario (
 
 -- Tabela Mensagem
 CREATE TABLE Mensagem (
-    mensagemId INT AUTO_INCREMENT PRIMARY KEY,
+    mensagemId INT AUTO_INCREMENT,
+    emissorId INT,
+    receptorId INT,
     conteudo TEXT NOT NULL,
-    dataEnvio DATETIME NOT NULL
+    dataEnvio DATETIME NOT NULL,
+    PRIMARY KEY(mensagemId, emissorId, receptorId)
 );
 
 
@@ -29,8 +32,8 @@ CREATE TABLE Comunidade (
 -- Tabela Comunidade_Usuario
 CREATE TABLE Comunidade_Usuario (
 	comunidadeId INT,
-    usuarioId INT,
-    PRIMARY KEY (comunidadeId, usuarioId)
+   usuarioId INT,
+   PRIMARY KEY (comunidadeId, usuarioId)
 );
 
 -- Tabela Publicacao
@@ -59,8 +62,8 @@ CREATE TABLE Evento (
 -- Tabela Evento_Usuario
 CREATE TABLE Evento_Usuario (
 	usuarioId INT,
-    eventoId INT,
-    PRIMARY KEY (usuarioId, eventoId)
+   eventoId INT,
+   PRIMARY KEY (usuarioId, eventoId)
 );
 
 -- Tabela RoteiroViagem
@@ -100,14 +103,12 @@ CREATE TABLE Avaliacao (
 
 -- Adicionando chaves estrangeiras
 ALTER TABLE Mensagem
-ADD remetenteId INT,
-ADD CONSTRAINT fk_remetente
-FOREIGN KEY (remetenteId) REFERENCES Usuario(usuarioId);
+ADD CONSTRAINT fk_emissor
+FOREIGN KEY (emissorId) REFERENCES Usuario(usuarioId);
 
 ALTER TABLE Mensagem
-ADD destinatarioId INT,
-ADD CONSTRAINT fk_destinatario
-FOREIGN KEY (destinatarioId) REFERENCES Usuario(usuarioId);
+ADD CONSTRAINT fk_receptor
+FOREIGN KEY (receptorId) REFERENCES Usuario(usuarioId);
 
 
 ALTER TABLE Publicacao

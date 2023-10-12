@@ -33,6 +33,7 @@ CREATE TABLE Comunidade (
 CREATE TABLE Comunidade_Usuario (
 	comunidadeId INT,
    usuarioId INT,
+   cargo ENUM('dono', 'participante'),
    PRIMARY KEY (comunidadeId, usuarioId)
 );
 

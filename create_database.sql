@@ -46,8 +46,8 @@ CREATE TABLE Publicacao (
 -- Tabela Comunidade_Publicacao
 CREATE TABLE Comunidade_Publicacao (
 	publicacaoId INT,
-    comunidadeId INT,
-    PRIMARY KEY (publicacaoId, comunidadeId)
+   comunidadeId INT,
+   PRIMARY KEY (publicacaoId, comunidadeId)
 );
 
 -- Tabela Evento
@@ -62,8 +62,8 @@ CREATE TABLE Evento (
 -- Tabela Evento_Usuario
 CREATE TABLE Evento_Usuario (
 	usuarioId INT,
-   eventoId INT,
-   PRIMARY KEY (usuarioId, eventoId)
+    eventoId INT,
+    PRIMARY KEY (usuarioId, eventoId)
 );
 
 -- Tabela RoteiroViagem
@@ -84,8 +84,8 @@ CREATE TABLE Localidade (
 -- Tabela Localidade_RoteiroViagem
 CREATE TABLE Localidade_RoteiroViagem (
 	localidadeId INT,
-    roteiroViagemId INT,
-    PRIMARY KEY (localidadeId, roteiroViagemId)
+   roteiroViagemId INT,
+	PRIMARY KEY (localidadeId, roteiroViagemId)
 );
 
 -- Tabela Comentario
@@ -110,16 +110,15 @@ ALTER TABLE Mensagem
 ADD CONSTRAINT fk_receptor
 FOREIGN KEY (receptorId) REFERENCES Usuario(usuarioId);
 
-
 ALTER TABLE Publicacao
 ADD usuarioId INT,
 ADD CONSTRAINT fk_usuario
 FOREIGN KEY (usuarioId) REFERENCES Usuario(usuarioId);
 
-ALTER TABLE Comunidade
-ADD usuarioId INT,
-ADD CONSTRAINT fk_usuario_proprietario
-FOREIGN KEY (usuarioId) REFERENCES Usuario(usuarioId);
+ALTER TABLE Publicacao
+ADD comunidadeId INT,
+ADD CONSTRAINT fk_comunidade_pertencente
+FOREIGN KEY (comunidadeId) REFERENCES Comunidade(comunidadeId);
 
 ALTER TABLE Comunidade_Publicacao
 ADD CONSTRAINT fk_publicacao
@@ -127,6 +126,14 @@ FOREIGN KEY (publicacaoId) REFERENCES Publicacao(publicacaoId);
 
 ALTER TABLE Comunidade_Publicacao
 ADD CONSTRAINT fk_comunidade
+FOREIGN KEY (comunidadeId) REFERENCES Comunidade(comunidadeId);
+
+ALTER TABLE Comunidade_Usuario
+ADD CONSTRAINT fk_usuario_participante
+FOREIGN KEY (usuarioId) REFERENCES Usuario(usuarioId);
+
+ALTER TABLE Comunidade_Usuario
+ADD CONSTRAINT fk_comunidade_participante
 FOREIGN KEY (comunidadeId) REFERENCES Comunidade(comunidadeId);
 
 ALTER TABLE Evento

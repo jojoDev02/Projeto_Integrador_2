@@ -9,12 +9,27 @@ const Usuario = mainInstance.define("Usuario", {
     },
     nome: {
         type: DataTypes.STRING,
+        validate: {
+            max: 255
+        },
         allowNull: false
     },
-    email: {},
-    senha: {},
-    apelido: {},
-    tipo: {}
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    senha: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    apelido: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    tipo: {
+        type: DataTypes.ENUM,
+        values: ["viajante", "representante_localidade"]
+    }
 });
 
 export default Usuario;

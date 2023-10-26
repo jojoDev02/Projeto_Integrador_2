@@ -7,28 +7,23 @@ const Mensagem = mainInstance.define("Mensagem", {
         autoIncrement: true,
         primaryKey: true
     },
-    nome: {
-        type: DataTypes.STRING,
-        validate: {
-            max: 255
-        },
-        allowNull: false
+    emissorId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true
+    },
+    receptorId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true
     },
     conteudo: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false
     },
-    senha: {
-        type: DataTypes.STRING,
+    dataEnvio: {
+        type: DataTypes.DATE,
         allowNull: false
-    },
-    apelido: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    tipo: {
-        type: DataTypes.ENUM,
-        values: ["viajante", "representante_localidade"]
     }
 });
 

@@ -1,15 +1,9 @@
 import "dotenv/config";
 import { Sequelize } from "sequelize";
-import logger from "./utils/logger";
+import config from "../config/database.js";
+import logger from "./utils/logger.js";
 
-const mainInstance = new Sequelize({
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-    dialect: "mysql",
-    password: process.env.DB_PASSWORD,
-    username: process.env.DB_USER
-});
+const mainInstance = new Sequelize(config.development);
 
 (async () => {
     try {
@@ -19,7 +13,7 @@ const mainInstance = new Sequelize({
     } catch (error) {
         logger.error("Failed establishing database connection.");
     }
-});
+})();
 
 export {
     mainInstance

@@ -9,9 +9,6 @@ const Usuario = mainInstance.define("Usuario", {
     },
     nome: {
         type: DataTypes.STRING,
-        validate: {
-            max: 255
-        },
         allowNull: false
     },
     email: {

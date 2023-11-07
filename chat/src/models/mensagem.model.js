@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { mainInstance } from "../database";
+import { mainInstance } from "../database.js";
 
 const Mensagem = mainInstance.define("Mensagem", {
     mensagemId: {
@@ -25,6 +25,9 @@ const Mensagem = mainInstance.define("Mensagem", {
         type: DataTypes.DATE,
         allowNull: false
     }
+}, {
+    freezeTableName: true,
+    timestamps: false
 });
 
 export default Mensagem;

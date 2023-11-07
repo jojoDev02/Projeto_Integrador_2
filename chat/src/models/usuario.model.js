@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { mainInstance } from "../database";
+import { mainInstance } from "../database.js";
 
 const Usuario = mainInstance.define("Usuario", {
     usuarioId: {
@@ -27,6 +27,9 @@ const Usuario = mainInstance.define("Usuario", {
         type: DataTypes.ENUM,
         values: ["viajante", "representante_localidade"]
     }
+}, {
+    freezeTableName: true,
+    timestamps: false
 });
 
 export default Usuario;

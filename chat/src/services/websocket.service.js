@@ -2,7 +2,7 @@ class WebsocketService {
     
     constructor(mensagemModel, logger) {
         this.ws = null;
-        this.sender = null;
+        this.senderId = null;
         this.clients = {};
         this.messagesHistory = {};
         
@@ -13,122 +13,120 @@ class WebsocketService {
     handleConnection = (ws, request) => {
         const senderId = request.url.substring(1);
 
-        this.sender = senderId;
+        this.senderId = senderId;
+        this.ws = ws;
     
         this.logger.info(`User ${senderId} connected.`);
     
-        this.clients[senderId] = {ws, receiverId: null, status: "OUT"};
+        this.clients[this.senderId] = {ws, receiverId: null, status: "OUT"};
         
-        ws.on("message", this.handleMessage);
+        try {
+            ws.on("message", this.handleMessage);
+        } catch (err) {
+            this.logger.error(err);
+            ws.send(err.message);
+        }
+        
         ws.on("close", this.handleClose);
         ws.on("error", this.handleError);
+
+        ws.send("Connection stablished.");
     }
     
     handleMessage = async (data) => {
+        this.logger.info(data);
+
         const message = JSON.parse(data);
+
+        this.logger.info(message);
 
         switch (message.action) {
             case "JOIN":
-                return this._handleJOIN();
+                return this._handleJOIN(message);
             case "SEND":
-                if (this.clients[this.sender].status != "IN") {
-                    ws.send(`User ${this.sender} must be in a chat to send messages.`);
-                    break;
-                }
-
-                const receiver = this.clients[this.sender].receiverId;
-
-                if (this.clients[receiver]?.receiverId != this.sender) break;
-                
-                this.clients[receiver].ws.send(message.data.content);
-                
-                const keys = Object.keys(this.messagesHistory);
-
-                let key = `${this.sender}@${receiver}`;
-
-                for (const existingKey of keys) {
-                    if (existingKey.includes(this.sender) && existingKey.includes(receiver)) {
-                        key = existingKey;
-                        break;
-                    }
-                }
-
-                this.messagesHistory[key] = key in this.messagesHistory ? 
-                    [
-                        ...this.messagesHistory[key],
-                        {senderId: this.sender, receiverId: receiver, content: message.data.content, timeSent: new Date()}
-                    ]
-                    :
-                    [
-                        {senderId: this.sender, receiverId: receiver, content: message.data.content, timeSent: new Date()}
-                    ]
-                
-                this.logger.info(this.messagesHistory);
-                
-                break;
+                return this._handleSEND(message);
             case "LEAVE":
-                if (this.clients[this.sender].status != "IN") {
-                    ws.send(`User ${this.sender} is not in a chat yet.`);
-                    break;
-                }
-
-                const receiverId = this.clients[this.sender].receiverId;
-                
-                const key1 = `${this.sender}@${receiverId}`;
-                const key2 = `${receiverId}@${this.sender}`;
-
-                const conversation = this.messagesHistory[key1] || this.messagesHistory[key2];
-
-                if (conversation === undefined) break;
-
-                for (const message of conversation) {
-                    await this.mensagemModel.create({
-                        emissorId: Number.parseInt(message.this.sender),
-                        receptorId: Number.parseInt(message.receiverId),
-                        conteudo: message.content,
-                        dataEnvio: message.timeSent
-                    });
-                }
-
-                this.clients[this.sender].receiverId = null;
-                this.clients[this.sender].status = "OUT";
-
-                break;
+                return this._handleLEAVE();
             default:
-            
+                throw new Error("The action provided is not valid.");
         }
     }
 
-    _handleJOIN = async () => {
-        if (this.clients[this.sender].status != "OUT") {
-            ws.send(`User ${this.sender} is already in a chat yet.`);
-            return false;
+    _handleJOIN = async (message) => {
+        if (this.clients[this.senderId].status != "OUT") {
+            this.ws.send(`User ${this.senderId} is already in a chat.`);
+            return;
         }
 
-        this.clients[this.sender].receiverId = message.data.content;
-        this.clients[this.sender].status = "IN";
+        const receiverId = message.content;
 
-        let messages = [];
+        this.clients[this.senderId].receiverId = receiverId;
+        this.clients[this.senderId].status = "IN";
 
-      
-        messages = await this.mensagemModel.findAll({
+        const messages = await this.mensagemModel.findAll({
             where: {
-                emissorId: this.sender,
-                receptorId: message.data.content
+                emissorId: this.senderId,
+                receptorId: receiverId
             }
-        });
+        }) || "Historico de mensagens";
 
-        ws.send(messages);
-
-        return true;
+        this.ws.send(messages);
     }
 
-    _handleSEND = () => {
+    _handleSEND = (message) => {
+        if (this.clients[this.senderId].status != "IN") {
+            this.ws.send(`User ${this.senderId} must be in a chat to send messages.`);
+            return;
+        }
 
+        const receiver = this.clients[this.senderId].receiverId;
+
+        if (this.clients[receiver]?.receiverId != this.senderId) return;
+        
+        this.clients[receiver].ws.send(message.content);
+        
+        const keys = Object.keys(this.messagesHistory);
+
+        let key = `${this.senderId}@${receiver}`;
+
+        for (const existingKey of keys) {
+            if (existingKey.includes(this.senderId) && existingKey.includes(receiver)) {
+                key = existingKey;
+                break;
+            }
+        }
+
+        this.messagesHistory[key] = key in this.messagesHistory ? 
+            [
+                ...this.messagesHistory[key],
+                {senderId: this.senderId, receiverId: receiver, content: message.content, timeSent: new Date()}
+            ]
+            :
+            [
+                {senderId: this.senderId, receiverId: receiver, content: message.content, timeSent: new Date()}
+            ]
+        
+        this.logger.info(this.messagesHistory);
     }
 
-    _handleLEAVE = () => {
+    _handleLEAVE = async () => {
+        if (this.clients[this.senderId].status != "IN") {
+            this.ws.send(`User ${this.senderId} is not in a chat yet.`);
+            
+            return;
+        }
 
+        const receiverId = this.clients[this.senderId].receiverId;
+        
+        const key1 = `${this.senderId}@${receiverId}`;
+        const key2 = `${receiverId}@${this.senderId}`;
+
+        const conversation = this.messagesHistory[key1] || this.messagesHistory[key2];
+
+        this.clients[this.senderId].receiverId = null;
+        this.clients[this.senderId].status = "OUT";
+
+        if (conversation === undefined) return;
     }
 
     handleError = (err) => {
@@ -136,9 +134,9 @@ class WebsocketService {
     }
 
     handleClose = () => {
-        delete clients[this.sender];
+        delete this.clients[this.senderId];
     
-        this.logger.info(`User ${this.sender} disconnected.`);
+        this.logger.info(`User ${this.senderId} disconnected.`);
     }
 }
 

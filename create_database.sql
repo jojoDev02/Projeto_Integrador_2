@@ -9,7 +9,7 @@ CREATE TABLE Usuario (
     email VARCHAR(255) NOT NULL,
     senha VARCHAR(255) NOT NULL,
     apelido VARCHAR(255) NOT NULL,
-    tipo ENUM('viajante', 'respresentante_localidade')
+    tipo ENUM('viajante', 'representante_localidade')
 );
 
 -- Tabela Mensagem
@@ -31,7 +31,7 @@ CREATE TABLE Comunidade (
 
 -- Tabela Comunidade_Usuario
 CREATE TABLE Comunidade_Usuario (
-	comunidadeId INT,
+   comunidadeId INT,
    usuarioId INT,
    cargo ENUM('dono', 'participante'),
    PRIMARY KEY (comunidadeId, usuarioId)

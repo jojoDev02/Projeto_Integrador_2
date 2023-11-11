@@ -1,7 +1,9 @@
 import "dotenv/config";
 import { Sequelize } from "sequelize";
 import config from "../config/database.js";
-import logger from "./utils/logger.js";
+import Logger from "./helpers/logger.helper.js";
+
+const logger = new Logger();
 
 const mainInstance = new Sequelize(config.development);
 

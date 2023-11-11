@@ -74,16 +74,25 @@ class WebsocketService {
     }
 
     _handleSEND = (message) => {
+        this.logger.info("Handling message...");
+
         if (this.clients[this.senderId].status != "IN") {
-            this.ws.send(`User ${this.senderId} must be in a chat to send messages.`);
+            this.logger.info(`User ${this.senderId} must be in a chat to send messages.`);
+            this.ws.send(`You must be in a chat to send messages.`);
             return;
         }
 
         const receiver = this.clients[this.senderId].receiverId;
+        const data = {
+            sender: this.senderId,
+            message: message.content
+        }
+
+        this.clients[this.senderId].ws.send(JSON.stringify(data));
 
         if (this.clients[receiver]?.receiverId != this.senderId) return;
         
-        this.clients[receiver].ws.send(message.content);
+        this.clients[receiver].ws.send(JSON.stringify(data));
         
         const keys = Object.keys(this.messagesHistory);
 
@@ -106,7 +115,6 @@ class WebsocketService {
                 {senderId: this.senderId, receiverId: receiver, content: message.content, timeSent: new Date()}
             ]
         
-        this.logger.info(this.messagesHistory);
     }
 
     _handleLEAVE = async () => {

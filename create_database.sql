@@ -47,8 +47,8 @@ CREATE TABLE Publicacao (
 -- Tabela Comunidade_Publicacao
 CREATE TABLE Comunidade_Publicacao (
 	publicacaoId INT,
-   comunidadeId INT,
-   PRIMARY KEY (publicacaoId, comunidadeId)
+    comunidadeId INT,
+    PRIMARY KEY (publicacaoId, comunidadeId)
 );
 
 -- Tabela Evento
@@ -78,14 +78,14 @@ CREATE TABLE RoteiroViagem (
 CREATE TABLE Localidade (
     localidadeId INT AUTO_INCREMENT PRIMARY KEY,
     cidade VARCHAR(255) NOT NULL,
-    estado VARCHAR(255)NOT NULL,
+    estado VARCHAR(255) NOT NULL,
     bairro VARCHAR(255) NOT NULL
 );
 
 -- Tabela Localidade_RoteiroViagem
 CREATE TABLE Localidade_RoteiroViagem (
 	localidadeId INT,
-   roteiroViagemId INT,
+    roteiroViagemId INT,
 	PRIMARY KEY (localidadeId, roteiroViagemId)
 );
 
@@ -102,7 +102,24 @@ CREATE TABLE Avaliacao (
     texto TEXT NOT NULL
 );
 
+-- Tabela Amizade
+CREATE TABLE Amizade (
+    amizadeId INT AUTO_INCREMENT,
+    solicitanteId INT,
+    receptorId INT,
+    status ENUM("pendente", "confirmada"),
+    PRIMARY KEY (amizadeId, solicitanteId, receptorId)
+);
+
 -- Adicionando chaves estrangeiras
+ALTER TABLE Amizade
+ADD CONSTRAINT fk_solicitante
+FOREIGN KEY (solicitanteId) REFERENCES Usuario(usuarioId);
+
+ALTER TABLE Amizade
+ADD CONSTRAINT fk_receptorAmizade
+FOREIGN KEY (receptorId) REFERENCES Usuario(usuarioId);
+
 ALTER TABLE Mensagem
 ADD CONSTRAINT fk_emissor
 FOREIGN KEY (emissorId) REFERENCES Usuario(usuarioId);

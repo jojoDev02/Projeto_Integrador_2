@@ -15,3 +15,10 @@ class Usuario(Base):
     senha = Column(String(255), nullable=False);
     apelido = Column(String(255), nullable=False);
     tipo = Column(Enum(Tipo));
+    
+    def __init__(self, nome, apelido, email, senha, tipo):
+        self.nome = nome;
+        self.apelido = apelido;
+        self.email = email;
+        self.senha = senha;
+        self.tipo = tipo;

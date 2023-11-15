@@ -1,6 +1,11 @@
 from flask import Blueprint, request;
 from flask.json import jsonify;
 from repositories.usuario_repository import Usuario_Repository;
+import bcrypt;
+from jwt import JWT, jwk_from_dict;
+from jwt.utils import get_int_from_datetime;
+from datetime import datetime, timedelta, timezone;
+from jwt.jwk import jwk_from_bytes;
 
 bp = Blueprint("registration", __name__, url_prefix="/api/v1/register");
 
@@ -12,13 +17,34 @@ def register():
     
     repository = Usuario_Repository();
     userExists = repository.fetch_by_email(email);
-    
+
     if (userExists != None):
         return jsonify("Usuario já cadastrado"), 400;
     
-    senha = body["senha"];
+    passwd = body["senha"].encode();
+    hashedPass = bcrypt.hashpw(passwd, bcrypt.gensalt(14));
     
-    repository.create();
+    data = {
+        "email": body["email"],
+        "apelido": body["apelido"],
+        "senha": hashedPass,
+        "tipo": body["tipo"],
+        "nome": body["nome"]
+    };
     
-    return jsonify("Usuário cadastrado com sucesso."), 201;
+    jwtInstance = JWT();
+
+    message = {
+        "iss": "http://localhost:5000",
+        "exp": get_int_from_datetime(datetime.now(timezone.utc) + timedelta(hours=1)),
+        "email": body["email"]
+    }
+    
+    key = jwk_from_dict({"kty": "oct", "k": "GawgguFyGrWKav7AX4VKUg"});
+    
+    jwtToken = jwtInstance.encode(message, key, alg="HS256");
+    
+    repository.create(data);
+    
+    return jsonify({"token": jwtToken}), 201;
     

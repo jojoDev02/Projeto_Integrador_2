@@ -5,19 +5,19 @@ from models.usuario import Usuario;
 class Usuario_Repository:
     
     def fetch_by_email(self, email):
-        return db_session.query(Usuario).filter_by(email=email).first();
+        return db_session.query(Usuario).filter(Usuario.email == email).first();
     
     def fetch_all(self):
         return db_session.query(Usuario).all();
     
-    def create(self):
-        nome = self.nome;
-        email = self.email;
-        senha = self.senha;
-        apelido = self.apelido;
-        tipo = self.tipo;
+    def create(self, data):
+        nome = data["nome"];
+        email = data["email"];
+        senha = data["senha"];
+        apelido = data["apelido"];
+        tipo = data["tipo"];
         
-        usuario = Usuario(nome, email, senha, apelido, tipo);
+        usuario = Usuario(nome=nome, email=email, senha=senha, apelido=apelido, tipo=tipo);
         
         db_session.add(usuario);
         db_session.commit();

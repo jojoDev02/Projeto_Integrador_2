@@ -1,0 +1,6 @@
+flask
+dependency-injector
+jwt
+SQLAlchemy
+bcrypt
+PyMySQL

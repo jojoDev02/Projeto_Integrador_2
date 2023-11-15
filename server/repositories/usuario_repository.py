@@ -1,11 +1,13 @@
 from models.usuario import Usuario;
 from database import db_session;
-from models.usuario import Usuario;
 
 class Usuario_Repository:
     
     def fetch_by_email(self, email):
         return db_session.query(Usuario).filter(Usuario.email == email).first();
+    
+    def fetch_by_id(self, id):
+        return db_session.query(Usuario).filter(Usuario.usuarioId == id).first();
     
     def fetch_all(self):
         return db_session.query(Usuario).all();

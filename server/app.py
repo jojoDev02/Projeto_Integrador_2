@@ -6,10 +6,11 @@ from controllers import (
     amizade_controller,
     usuario_controller
 );
-from containers import Container;
 from models.usuario import Usuario;
+from flask_cors import CORS;
 
 app = Flask(__name__);
+CORS(app);
 
 app.register_blueprint(registration_controller.bp);
 app.register_blueprint(authentication_controller.bp);

@@ -4,3 +4,4 @@ jwt
 SQLAlchemy
 bcrypt
 PyMySQL
+flask-cors

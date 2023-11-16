@@ -1,150 +1,109 @@
+import { Op } from "sequelize";
+
 class WebsocketService {
     
-    constructor(mensagemModel, logger) {
-        this.ws = null;
-        this.senderId = null;
+    constructor(amizadeModel, mensagemModel, logger) {
         this.clients = {};
         this.messagesHistory = {};
         
         this.logger = logger;
         this.mensagemModel = mensagemModel;
+        this.amizadeModel = amizadeModel;
     }
 
-    handleConnection = (ws, request) => {
-        const senderId = request.url.substring(1);
-
-        this.senderId = senderId;
-        this.ws = ws;
+    handleConnection = async (ws, request) => {
+        const sender = request.url.substring(1);
     
-        this.logger.info(`User ${senderId} connected.`);
-    
-        this.clients[this.senderId] = {ws, receiverId: null, status: "OUT"};
+        this.logger.info(`User ${sender} connected.`);
         
-        try {
-            ws.on("message", this.handleMessage);
-        } catch (err) {
-            this.logger.error(err);
-            ws.send(err.message);
-        }
-        
-        ws.on("close", this.handleClose);
-        ws.on("error", this.handleError);
+        const amizades = await this.amizadeModel.findAll({
+            where: {
+                [Op.or]: [
+                    {solicitanteId: sender}, {receptorId: sender}
+                ]
+            }
+        });
 
-        ws.send("Connection stablished.");
+        let receivers = [];
+
+        receivers = amizades?.map(amizade => {
+            return amizade.solicitanteId == sender ? amizade.receptorId : amizade.solicitanteId;
+        });
+
+        console.log(receivers);
+
+        this.clients[sender] = { ws, receivers };
+        
+        ws.on("message", this.handleMessage);
+        
+        ws.on("close", () => {
+            delete this.clients[sender];
+
+            this.logger.info(`User ${sender} disconnected.`);
+        });
+
+        ws.on("error", (err) => this.logger.error(err));
+
+        ws.send(JSON.stringify("Connection stablished."));
     }
     
     handleMessage = async (data) => {
-        this.logger.info(data);
+        const parsedData = JSON.parse(data);
 
-        const message = JSON.parse(data);
+        this.logger.info(parsedData);
 
-        this.logger.info(message);
+        const { action, content } = parsedData;
 
-        switch (message.action) {
+        switch (action) {
             case "JOIN":
-                return this._handleJOIN(message);
-            case "SEND":
-                return this._handleSEND(message);
-            case "LEAVE":
-                return this._handleLEAVE();
-            default:
-                throw new Error("The action provided is not valid.");
-        }
-    }
+                const { senderId: senderIdJOIN, receiverId: receiverIdJOIN } = content;
+                
+                const mensagensJOIN = await this.mensagemModel.findAll({
+                    order: ["dataEnvio"],
+                    where: {
+                        [Op.or]: [
+                            {
+                                [Op.and]: [{emissorId: senderIdJOIN}, {receptorId: receiverIdJOIN}],
+                            },
+                            {
+                                [Op.and]: [{emissorId: receiverIdJOIN}, {receptorId: senderIdJOIN}]
+                            }
+                        ]
+                    }, 
+                });
 
-    _handleJOIN = async (message) => {
-        if (this.clients[this.senderId].status != "OUT") {
-            this.ws.send(`User ${this.senderId} is already in a chat.`);
-            return;
-        }
+                this.clients[senderIdJOIN].ws.send(JSON.stringify({action: "JOIN", content: {senderId: senderIdJOIN, messages: mensagensJOIN}}));
 
-        const receiverId = message.content;
-
-        this.clients[this.senderId].receiverId = receiverId;
-        this.clients[this.senderId].status = "IN";
-
-        const messages = await this.mensagemModel.findAll({
-            where: {
-                emissorId: this.senderId,
-                receptorId: receiverId
-            }
-        }) || "Historico de mensagens";
-
-        this.ws.send(messages);
-    }
-
-    _handleSEND = (message) => {
-        this.logger.info("Handling message...");
-
-        if (this.clients[this.senderId].status != "IN") {
-            this.logger.info(`User ${this.senderId} must be in a chat to send messages.`);
-            this.ws.send(`You must be in a chat to send messages.`);
-            return;
-        }
-
-        const receiver = this.clients[this.senderId].receiverId;
-        const data = {
-            sender: this.senderId,
-            message: message.content
-        }
-
-        this.clients[this.senderId].ws.send(JSON.stringify(data));
-
-        if (this.clients[receiver]?.receiverId != this.senderId) return;
-        
-        this.clients[receiver].ws.send(JSON.stringify(data));
-        
-        const keys = Object.keys(this.messagesHistory);
-
-        let key = `${this.senderId}@${receiver}`;
-
-        for (const existingKey of keys) {
-            if (existingKey.includes(this.senderId) && existingKey.includes(receiver)) {
-                key = existingKey;
                 break;
-            }
+            case "SEND":
+                const { senderId, receiverId, message } = content;
+                const sender = this.clients[senderId];
+                if (!sender) return;
+                sender.ws.send(JSON.stringify({action: "SEND", content: { senderId, message }}));
+        
+                this.logger.info(`Message sent by ${senderId}`);
+        
+                await this.mensagemModel.create({
+                    conteudo: message,
+                    dataEnvio: new Date(),
+                    receptorId: receiverId,
+                    emissorId: senderId
+                });
+        
+                if (!sender.receivers.includes(Number.parseInt(receiverId))) return;
+        
+                this.logger.info(`Receiver ${receiverId} is in sender ${senderId} frinds list.`);
+        
+                const receiver = this.clients[receiverId];
+                if (!receiver) return;
+                receiver.ws.send(JSON.stringify({action: "SEND", content: { senderId, message }}));
+        
+                this.logger.info(`Message received by ${receiverId}`);
+
+                break;
         }
 
-        this.messagesHistory[key] = key in this.messagesHistory ? 
-            [
-                ...this.messagesHistory[key],
-                {senderId: this.senderId, receiverId: receiver, content: message.content, timeSent: new Date()}
-            ]
-            :
-            [
-                {senderId: this.senderId, receiverId: receiver, content: message.content, timeSent: new Date()}
-            ]
-        
-    }
 
-    _handleLEAVE = async () => {
-        if (this.clients[this.senderId].status != "IN") {
-            this.ws.send(`User ${this.senderId} is not in a chat yet.`);
-            
-            return;
-        }
-
-        const receiverId = this.clients[this.senderId].receiverId;
-        
-        const key1 = `${this.senderId}@${receiverId}`;
-        const key2 = `${receiverId}@${this.senderId}`;
-
-        const conversation = this.messagesHistory[key1] || this.messagesHistory[key2];
-
-        this.clients[this.senderId].receiverId = null;
-        this.clients[this.senderId].status = "OUT";
-
-        if (conversation === undefined) return;
-    }
-
-    handleError = (err) => {
-        this.logger.error(err)
-    }
-
-    handleClose = () => {
-        delete this.clients[this.senderId];
-    
-        this.logger.info(`User ${this.senderId} disconnected.`);
     }
 }
 

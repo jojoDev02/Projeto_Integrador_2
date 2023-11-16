@@ -33,6 +33,11 @@ INSERT INTO Localidade (cidade, estado, bairro) VALUES
 ('Manaus', 'Amazonas', 'Parque das Aves'),
 ('Denver', 'Colorado', 'Bairro Mountain View');
 
+INSERT INTO Amizade (solicitanteId, receptorId) VALUES
+(1, 2),
+(3, 4),
+(1, 3),
+
 -- Inserir registros na tabela Evento
 INSERT INTO Evento (titulo, descricao, horario, data_evento, localidadeId) VALUES
 ('Workshop de Fotografia', 'Aprenda técnicas avançadas de fotografia.', '14:00:00', '2023-12-10',1),

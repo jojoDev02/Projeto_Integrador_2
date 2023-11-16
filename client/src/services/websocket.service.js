@@ -7,6 +7,10 @@ class WebsocketService {
         const jsonData = JSON.stringify(data);
         this.ws.send(jsonData);
     }
+
+    onMessage = (callback) => {
+        this.ws.onmessage = callback;
+    }
 }
 
 export default WebsocketService;

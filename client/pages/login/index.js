@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../_app";
 
-export default function Cadastro() {
+export default function Login() {
     const { register, handleSubmit } = useForm();
     const { setAuthUser } = useContext(UserContext);
     const router = useRouter();
@@ -48,16 +48,8 @@ export default function Cadastro() {
 
     return (
         <>
-            <h1>Cadastro</h1>
+            <h1>Login</h1>
             <form onSubmit={ handleSubmit(submit) }>
-                <div>
-                    <label>Nome</label>
-                    <input type="text" name="nome" { ...register("nome", { required: true }) }/>
-                </div>
-                <div>
-                    <label>Apelido</label>
-                    <input type="text" name="apelido" { ...register("apelido", { required: true }) }/>
-                </div>
                 <div>
                     <label>Email</label>
                     <input type="email" name="email" { ...register("email", { required: true }) }/>

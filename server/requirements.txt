@@ -1,7 +1,6 @@
 flask
-dependency-injector
 jwt
 SQLAlchemy
 bcrypt
-PyMySQL
+mysqlclient
 flask-cors

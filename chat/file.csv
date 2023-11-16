@@ -1,0 +1,9 @@
+metric_name,timestamp,metric_value,check,error,error_code,expected_response,group,method,name,proto,scenario,service,status,subproto,tls_version,url,extra_tags,metadata
+ws_sessions,1700176438,1.000000,,,,,,,,,default,,200,,,ws://echo.websocket.org,my_tag=hello,
+ws_connecting,1700176438,648.195800,,,,,,,,,default,,200,,,ws://echo.websocket.org,my_tag=hello,
+ws_session_duration,1700176438,652.373400,,,,,,,,,default,,200,,,ws://echo.websocket.org,my_tag=hello,
+checks,1700176439,0.000000,status is 101,,,,,,,,default,,,,,,,
+data_sent,1700176439,197.000000,,,,,,,,,default,,,,,,,
+data_received,1700176439,4096.000000,,,,,,,,,default,,,,,,,
+iteration_duration,1700176439,666.099300,,,,,,,,,default,,,,,,,
+iterations,1700176439,1.000000,,,,,,,,,default,,,,,,,

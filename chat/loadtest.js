@@ -7,6 +7,13 @@
 
 import ws from 'k6/ws';
 import { check } from 'k6';
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+
+export function handleSummary(data) {
+    return {
+      "summary.html": htmlReport(data),
+    };
+  }
 
 export default function () {
   const url = 'ws://echo.websocket.org';

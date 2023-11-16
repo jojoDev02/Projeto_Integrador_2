@@ -19,7 +19,7 @@ export default function Cadastro() {
         let res;
 
         try {
-            res = await fetch("http://localhost:5000/api/v1/login", {
+            res = await fetch("http://localhost:5000/api/v1/register", {
                 method: "POST",
                 body: JSON.stringify(userData),
                 headers: {

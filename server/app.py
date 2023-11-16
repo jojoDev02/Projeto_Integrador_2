@@ -17,7 +17,4 @@ app.register_blueprint(authentication_controller.bp);
 app.register_blueprint(amizade_controller.bp);
 app.register_blueprint(usuario_controller.bp);
 
-
-user = db_session.query(Usuario).filter(Usuario.usuarioId == 1).first();
-
 init_db();

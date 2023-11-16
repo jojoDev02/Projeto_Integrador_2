@@ -2,7 +2,7 @@ from sqlalchemy import create_engine;
 from sqlalchemy.orm import scoped_session, sessionmaker;
 from sqlalchemy.ext.declarative import declarative_base;
 
-engine = create_engine("mysql+mysqldb://root:1234@localhost[3306]/rede_social?charset=utf8mb4");
+engine = create_engine("mysql+pymysql://root:1234@172.17.0.2/rede_social");
 
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine));
 

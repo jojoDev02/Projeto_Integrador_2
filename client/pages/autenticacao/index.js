@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../_app";
 
-export default function Login() {
+export default function Autenticacao() {
     const { register, handleSubmit } = useForm();
     const { setAuthUser } = useContext(UserContext);
     const router = useRouter();
@@ -11,15 +11,11 @@ export default function Login() {
     const submit = async (data) => {
         console.log(data);
 
-        const userData = {
-            ...data,
-            tipo: "viajante"
-        };
-
+        
         let res;
 
         try {
-            res = await fetch("http://localhost:5000/api/v1/login", {
+            res = await fetch("http://localhost:5000/api/v1/authenticate", {
                 method: "POST",
                 body: JSON.stringify(userData),
                 headers: {
@@ -31,7 +27,7 @@ export default function Login() {
 
             res = await res.json();
 
-            if (statusCode != 201) throw Error(res);
+            if (statusCode != 200) throw Error(res);
         } catch (err) {
             console.log(err);
             return;

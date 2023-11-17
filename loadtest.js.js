@@ -1,4 +1,11 @@
 import http from 'k6/http';
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
+
+export function handleSummary(data) {
+    return {
+      "summary.html": htmlReport(data),
+    };
+  }
 
 export const options = {
     vus: 10,
@@ -9,14 +16,19 @@ export const options = {
     },
 };
 
+
 export default function () {
     let data = {
-        name: 'maria',
-        email: 'maria@gmail.com',
-        document: '79267537008'
+        nome: "Maria",
+        email: "Maria@gmail.com",
+        senha: "123",
+        apelido: "Maria Apelio",
+        tipo: "1"
     };
 
     http.post('http://localhost:5000/api/v1/register', JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json' }
     });
+
+
 }

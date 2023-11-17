@@ -16,7 +16,7 @@ export function handleSummary(data) {
   }
 
 export default function () {
-  const url = 'ws://echo.websocket.org';
+  const url = 'ws://localhost:8080';
   const params = { tags: { my_tag: 'hello' } };
 
   const res = ws.connect(url, params, function (socket) {

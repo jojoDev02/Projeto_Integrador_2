@@ -9,6 +9,7 @@ df = df.dropna(subset=['metric_value'])
 df_grouped = df.groupby(pd.Grouper(key='timestamp', freq='T')).agg({'metric_value': 'mean'})
 
 plt.figure(figsize=(10, 6))
+
 plt.plot(df_grouped.index, df_grouped['metric_value'], marker='o')
 plt.title('Quantidade Média de Requisições por Minuto')
 plt.xlabel('Tempo')

@@ -42,3 +42,22 @@ Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**
 * Para o projeto funcionar, é necessário subir o banco de dados e o server em container
 * Os testes de carga foram feitos com o grafana/K6, onde foram gerados dashboards com os dados obtidos, além da criação de gráficos da latência, vazão e concorrência a partir de um arquivo .csv. As imagens abaixo são referentes aos testes:
 
+## Dashboard 01 da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/user_dashboard_01.png?raw=true)
+
+## Dashboard 02 da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/user_dashboard_02.png?raw=true)
+
+## Gráfico de latência da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/user_latencia.png?raw=true)
+
+## Gráfico de vazão da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/vazao_user.png?raw=true)
+
+## Gráfico de concorrência da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/user_concorrencia.png?raw=true)

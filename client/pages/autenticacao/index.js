@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { httpPy } from "../../src/api";
 import { UserContext } from "../_app";
 
 export default function Autenticacao() {
@@ -11,35 +12,29 @@ export default function Autenticacao() {
     const submit = async (data) => {
         console.log(data);
 
-        let res;
-
         try {
-            res = await fetch("http://localhost:5000/api/v1/authenticate", {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-
-            const statusCode = res.status;
-
-            res = await res.json();
-
-            if (statusCode != 200) throw Error(res);
+            await authenticateUser(data);
         } catch (err) {
             console.log(err);
             return;
         }
 
+        router.push("/");
+    };
+
+    const authenticateUser = async (userData) => {
+        const res = await httpPy.post("/authenticate", userData );
+
+        const { data, statusCode } = res;
+
+        if (statusCode != 200) throw Error(res);
+           
         console.log(res);
 
-        const { user } = res;
+        const { user, token } = data;
 
-        setAuthUser(user);
-
-        router.push("/conversas");
-    };
+        setAuthUser({ ...user, token });
+    }
 
     return (
         <>

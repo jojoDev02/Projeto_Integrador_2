@@ -1,12 +1,15 @@
 import { WebSocketServer } from "ws";
 import "./associations.js";
-import Logger from "./helpers/logger.helper.js";
+import LoggerHelper from "./helpers/logger.helper.js";
 import { Amizade, Mensagem } from "./models/index.js";
+import MemcachedService from "./services/memcached.service.js";
 import WebsocketService from "./services/websocket.service.js";
 
-const logger = new Logger();
+const logger = new LoggerHelper();
 const webSocketServer = new WebSocketServer({ port: 8080, host: "0.0.0.0" });
-const websocketService = new WebsocketService(Amizade, Mensagem, logger);
+const memcachedService = new MemcachedService();
+
+const websocketService = new WebsocketService(Amizade, Mensagem, logger, memcachedService);
 
 webSocketServer.on("connection", websocketService.handleConnection);
 

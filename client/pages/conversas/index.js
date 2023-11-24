@@ -1,7 +1,9 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
+import { httpPy } from "../../src/api";
 import WebsocketService from "../../src/services/websocket.service";
 import { UserContext } from "../_app";
+
 
 export default function Conversas() {
 
@@ -10,8 +12,8 @@ export default function Conversas() {
     const [receiver, setReceiver] = useState(-1);
     const [text, setText] = useState("");
     const [conversation, setConversation] = useState([]);
-    const [notifications, setNofification] = useState({});
-    const [friends, setFriends] = useState([]);
+    const [notificacoes, setNotificacoes] = useState({});
+    const [amigos, setAmigos] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -20,6 +22,8 @@ export default function Conversas() {
         if (!router.isReady) return;
 
         console.log(authUser.id);
+
+        if (authUser.id == undefined) return;
 
         const client = new WebsocketService(`ws://localhost:8080/${authUser.id}`);      
 
@@ -51,7 +55,7 @@ export default function Conversas() {
             if (!message || !senderId) return;
 
             if (senderId != authUser.id) {
-                setNofification(prev => { return { ...prev, [senderId]: message } });
+                setNotificacoes(prev => { return { ...prev, [senderId]: message } });
 
                 if (senderId != receiver) return;
             }
@@ -67,23 +71,24 @@ export default function Conversas() {
     useEffect(() => {
         const fetchAmigos = async () => {
 
-            if (authUser.id == -1) return;
+            if (authUser.id == undefined) return;
     
-            const res = await fetch(`http://localhost:5000/api/v1/usuarios/${authUser.id}/amizades`);
+            const res = await httpPy.get(`/usuarios/${authUser.id}/amizades`);
             
-            const data = await res.json();
+            console.log(res);
+
+            const data = res.data;
     
-            const friendships = data.content;
+            const amigos = data.content;
 
-            friendships.map(friendship => {
-                const friendId = friendship.receptorId == authUser.id ? friendship.solicitanteId : friendship.receptorId;
+            console.log(amigos);
 
-                setFriends(prev => [ ...prev, { id: friendId }])
-            });
+            setAmigos(amigos);
+           
         }
 
         fetchAmigos();
-    }, [authUser.id]);
+    }, []);
 
     const sendText = (event) => {
         event.preventDefault();
@@ -108,7 +113,7 @@ export default function Conversas() {
         if (receiverId == receiver) return;
         
         setConversation([]);
-        setNofification(prev => { 
+        setNotificacoes(prev => { 
             delete prev[receiver]
             return prev; 
         });
@@ -129,10 +134,10 @@ export default function Conversas() {
                 <section>
                     <h2>Amigos</h2>
                     {
-                        friends?.map(({ id }) => {
+                        amigos?.map(({ id, amigoId }) => {
                             return (
                                 <ul key={ id }>
-                                    <li onClick={ joinChat } id={ id } style={{ background: notifications[id] && receiver != id ? "purple" : "" }}>Amigo { id }</li>
+                                    <li onClick={ joinChat } id={ amigoId } style={{ background: notificacoes[amigoId] && receiver != amigoId ? "purple" : "" }}>Amigo { amigoId }</li>
                                 </ul>
                             )
                         })

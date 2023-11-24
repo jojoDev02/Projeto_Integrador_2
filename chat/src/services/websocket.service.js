@@ -1,50 +1,78 @@
-import { Op } from "sequelize";
+import { Op, literal } from "sequelize";
 
 class WebsocketService {
     
-    constructor(amizadeModel, mensagemModel, logger) {
-        this.clients = {};
-        this.messagesHistory = {};
-        
-        this.logger = logger;
+    constructor(
+        amizadeModel, 
+        mensagemModel, 
+        loggerHelper, 
+        memcachedService
+    ) {
+        this.clients = {};        
+        this.logger = loggerHelper;
         this.mensagemModel = mensagemModel;
         this.amizadeModel = amizadeModel;
+        this.memcachedService = memcachedService;
     }
 
     handleConnection = async (ws, request) => {
-        const sender = request.url.substring(1);
-    
-        this.logger.info(`User ${sender} connected.`);
+        const senderId = request.url.substring(1);
         
-        const amizades = await this.amizadeModel.findAll({
-            where: {
-                [Op.or]: [
-                    {solicitanteId: sender}, {receptorId: sender}
-                ]
-            }
+        if (!senderId) {
+            return;
+        }
+
+        this.logger.info(`User ${senderId} connected.`);
+        
+        const friends = await this._fetchFriends(senderId);
+
+        this.logger.info(Object.entries(friends));
+        
+        const receiveFrom = friends?.map(friend => {
+            return friend.id;
         });
 
-        let receivers = [];
+        this.logger.info("receivers: " + receiveFrom)
+        this.logger.info(receiveFrom);
 
-        receivers = amizades?.map(amizade => {
-            return amizade.solicitanteId == sender ? amizade.receptorId : amizade.solicitanteId;
-        });
-
-        console.log(receivers);
-
-        this.clients[sender] = { ws, receivers };
+        this.clients[senderId] = { ws, receivers: receiveFrom };
         
         ws.on("message", this.handleMessage);
-        
         ws.on("close", () => {
-            delete this.clients[sender];
-
-            this.logger.info(`User ${sender} disconnected.`);
+            delete this.clients[senderId];
+            this.logger.info(`User ${senderId} disconnected.`);
+        });
+        ws.on("error", (err) => {
+            ws.send(err);
+            this.logger.error(err)
         });
 
-        ws.on("error", (err) => this.logger.error(err));
-
         ws.send(JSON.stringify("Connection stablished."));
+    }
+
+    _fetchFriends = async (id) => {
+        let friends = undefined//await this.memcachedService.get(`user_${id}_friends`);
+
+
+        if (!friends) {
+           friends = await this.amizadeModel.findAll({
+                raw: true,
+                attributes: [
+                    [literal(`CASE WHEN solicitanteId = ${id} THEN receptorId ELSE solicitanteId END`), "id"]
+                ],
+                where: {
+                    [Op.or]: [
+                        {solicitanteId: id}, {receptorId: id}
+                    ],
+                    status: "confirmada"
+
+                } 
+            }) || [];
+
+            await this.memcachedService.set(`user_${id}_friends`, friends);
+        }
+
+        return friends;
     }
     
     handleMessage = async (data) => {
@@ -56,54 +84,87 @@ class WebsocketService {
 
         switch (action) {
             case "JOIN":
-                const { senderId: senderIdJOIN, receiverId: receiverIdJOIN } = content;
-                
-                const mensagensJOIN = await this.mensagemModel.findAll({
-                    order: ["dataEnvio"],
-                    where: {
-                        [Op.or]: [
-                            {
-                                [Op.and]: [{emissorId: senderIdJOIN}, {receptorId: receiverIdJOIN}],
-                            },
-                            {
-                                [Op.and]: [{emissorId: receiverIdJOIN}, {receptorId: senderIdJOIN}]
-                            }
-                        ]
-                    }, 
-                });
-
-                this.clients[senderIdJOIN].ws.send(JSON.stringify({action: "JOIN", content: {senderId: senderIdJOIN, messages: mensagensJOIN}}));
-
-                break;
+                return this._handleJoin(content);
             case "SEND":
-                const { senderId, receiverId, message } = content;
-                const sender = this.clients[senderId];
-                if (!sender) return;
-                sender.ws.send(JSON.stringify({action: "SEND", content: { senderId, message }}));
-        
-                this.logger.info(`Message sent by ${senderId}`);
-        
-                await this.mensagemModel.create({
-                    conteudo: message,
-                    dataEnvio: new Date(),
-                    receptorId: receiverId,
-                    emissorId: senderId
-                });
-        
-                if (!sender.receivers.includes(Number.parseInt(receiverId))) return;
-        
-                this.logger.info(`Receiver ${receiverId} is in sender ${senderId} frinds list.`);
-        
-                const receiver = this.clients[receiverId];
-                if (!receiver) return;
-                receiver.ws.send(JSON.stringify({action: "SEND", content: { senderId, message }}));
-        
-                this.logger.info(`Message received by ${receiverId}`);
-
-                break;
+                return this._handleSend(content);
+            default:
+                throw Error("Invalid action.");
         }
+    }
 
+    _handleJoin = async (content) => {
+        let { senderId , receiverId } = content;
+                
+        const messages = await this._fetchMessages(senderId, receiverId);
 
+        const data = { action: "JOIN", content: { senderId, messages } };
+
+        this.clients[senderId].ws.send(JSON.stringify(data));
+    }
+
+    _handleSend = async (content) => {
+        let { senderId, receiverId, message } = content;
+
+        const data = JSON.stringify({ action: "SEND", content: { senderId, message } });
+
+        const [ sender ] = this._sendMessageBackToSender(senderId, data);
+
+        this.logger.info(`Message sent by ${senderId}`);
+
+        await this.mensagemModel.create({
+            conteudo: message,
+            dataEnvio: new Date(),
+            receptorId: receiverId,
+            emissorId: senderId
+        });
+
+        if (!sender.receivers.includes(Number.parseInt(receiverId))) return;
+
+        this.logger.info(`Receiver ${receiverId} is in sender ${senderId} friends list.`);
+
+        try {
+            this._sendMessageToReceiver(receiverId, data);
+        } catch (err) {
+            this.logger.error(err);
+        }
+    }
+
+    _sendMessageBackToSender = (senderId, data) => {
+        const sender = this.clients[senderId];
+        if (!sender) throw Error("Sender not online.");
+        sender.ws.send(data);
+
+        this.logger.info(`Message sent by ${senderId}`);
+
+        return [ sender, data ];
+    }
+
+    _sendMessageToReceiver = (receiverId, data) => {
+        const receiver = this.clients[receiverId];
+        if (!receiver) throw Error("Receiver not online.");
+        receiver.ws.send(data);
+
+        this.logger.info(`Message received by ${receiverId}`);
+    }
+
+    _fetchMessages = async (senderId, receiverId) => {
+        const messages = await this.mensagemModel.findAll({
+            order: ["dataEnvio"],
+            where: {
+                [Op.or]: [
+                    {
+                        [Op.and]: [{emissorId: senderId}, {receptorId: receiverId}],
+                    },
+                    {
+                        [Op.and]: [{emissorId: receiverId}, {receptorId: senderId}]
+                    }
+                ]
+            }, 
+        });
+
+        this.logger.info(messages);
+
+        return messages;
     }
 }
 

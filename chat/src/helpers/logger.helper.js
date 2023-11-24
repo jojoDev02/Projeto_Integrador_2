@@ -1,6 +1,6 @@
 import pino from "pino";
 
-class Logger {
+class LoggerHelper {
     constructor() {
         this.logger = pino();
     }
@@ -14,4 +14,4 @@ class Logger {
     }
 }
 
-export default Logger;
+export default LoggerHelper;

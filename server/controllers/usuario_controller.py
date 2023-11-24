@@ -9,16 +9,24 @@ def amizades(id):
     usuario_repository = Usuario_Repository();
     usuario = usuario_repository.fetch_by_id(id);
     
+    if (usuario == None):
+        return jsonify("Usuário não encontrato."), 404;
+    
     amizades_solicitadas = usuario.amizades_solicitadas;
     amizades_recebidas = usuario.amizades_recebidas;
     amizades = amizades_recebidas + amizades_solicitadas;
-    
+
     amizadesFormatadas = [];
     for amizade in amizades:
+        
+        if id == amizade.receptorId:
+            amigo_id = amizade.solicitanteId;
+        else:
+            amigo_id = amizade.receptorId;
+            
         amizadesFormatadas.append({
             "id": amizade.amizadeId, 
-            "receptorId": amizade.receptorId, 
-            "solicitanteId": amizade.solicitanteId,
+            "amigoId": amigo_id,
             "status": amizade.status.value
         });
     

@@ -1,5 +1,6 @@
 from models.usuario import Usuario;
 from database import db_session;
+from sqlalchemy import or_;
 
 class Usuario_Repository:
     
@@ -11,6 +12,15 @@ class Usuario_Repository:
     
     def fetch_all(self):
         return db_session.query(Usuario).all();
+    
+    def fetch_all_by(self, email, nome, apelido):
+        return db_session.query(Usuario).filter(
+            or_(
+                Usuario.email == email, 
+                Usuario.nome == nome, 
+                Usuario.apelido == apelido
+            )
+        ).all();
     
     def create(self, data):
         nome = data["nome"];

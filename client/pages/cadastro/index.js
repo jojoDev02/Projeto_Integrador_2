@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { httpPy } from "../../src/api";
 import { UserContext } from "../_app";
 
 export default function Cadastro() {
@@ -16,35 +17,28 @@ export default function Cadastro() {
             tipo: "viajante"
         };
 
-        let res;
-
         try {
-            res = await fetch("http://localhost:5000/api/v1/register", {
-                method: "POST",
-                body: JSON.stringify(userData),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-
-            const statusCode = res.status;
-
-            res = await res.json();
-
-            if (statusCode != 201) throw Error(res);
+            await registerUser(userData);
         } catch (err) {
             console.log(err);
             return;
         }
 
+        router.push("/");
+    };
+
+    const registerUser = async (userData) => {
+        const res = await httpPy.post("/register", userData);
         console.log(res);
 
-        const { user } = res;
+        const { data, statusCode } = res;
 
-        setAuthUser(user);
+        if (statusCode != 201) throw Error(res);
 
-        router.push("/conversas");
-    };
+        const { token, user } = data;
+
+        setAuthUser({ ...user, token });
+    }
 
     return (
         <>

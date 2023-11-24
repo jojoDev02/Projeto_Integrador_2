@@ -12,6 +12,9 @@ bp = Blueprint("registration", __name__, url_prefix="/api/v1/register");
 def register():
     
     body = request.get_json();
+    
+    print(body);
+    
     email = body["email"];
     repository = Usuario_Repository();
     userExists = repository.fetch_by_email(email);
@@ -40,7 +43,6 @@ def register():
     jwtToken = jwtInstance.encode(message, key, alg="HS256");
     
     user = repository.create(data);
-    
     userFormated = {
         "id": user.usuarioId, 
         "email": user.email, 

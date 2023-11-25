@@ -14,11 +14,16 @@ class Usuario_Repository:
         return db_session.query(Usuario).all();
     
     def fetch_all_by(self, email, nome, apelido):
+        
+        email = "%{}%".format(email);
+        nome = "%{}%".format(nome);
+        apelido = "%{}%".format(apelido);
+        
         return db_session.query(Usuario).filter(
             or_(
-                Usuario.email == email, 
-                Usuario.nome == nome, 
-                Usuario.apelido == apelido
+                Usuario.email.like(email), 
+                Usuario.nome.like(nome), 
+                Usuario.apelido.like(apelido)
             )
         ).all();
     

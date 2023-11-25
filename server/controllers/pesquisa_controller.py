@@ -8,16 +8,31 @@ bp = Blueprint("pesquisa", __name__, url_prefix="/api/v1/pesquisar");
 def pesquisar():
     
     p = request.args.get("p");
+    
+    print(p);
 
-    usuario_repository = Usuario_Repository();
-    usuarios = usuario_repository.fetch_all_by(email=p, nome=p, apelido=p);
-    print(type(usuarios));
-    serializador = Serializador_Service();
-    serializador.serializar(usuarios);
+    usuarios = [];
+
+    if (p.strip() != ""):
+        usuario_repository = Usuario_Repository();
+        usuarios = usuario_repository.fetch_all_by(email=p, nome=p, apelido=p);
+
+        usuarios = [
+            {
+                "nome": usuario.nome,
+                "apelido": usuario.apelido,
+                "email": usuario.email,
+                "tipo": usuario.tipo.value
+            }
+            for usuario in usuarios
+        ];  
+    
+    print(usuarios);
+
     
     return jsonify({
-            "mensagem": "Pesquisa realizada"
+            "mensagem": "Pesquisa realizada",
+            "conteudo": {
+                "usuarios": usuarios
+            }
         }), 200;
-    
-    
-    

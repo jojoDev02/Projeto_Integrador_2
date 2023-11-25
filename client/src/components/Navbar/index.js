@@ -6,7 +6,7 @@ export default function Navbar() {
     const { handleSubmit, register } = useForm();
     const router = useRouter()
 
-    const pesquisar = (data) => {
+    const redirecionarPesquisa = (data) => {
         
         const { pesquisa } = data; 
 
@@ -21,7 +21,7 @@ export default function Navbar() {
     return(
         <>
             <h1>We Travel</h1>
-            <form onSubmit={ handleSubmit(pesquisar) }>
+            <form onSubmit={ handleSubmit(redirecionarPesquisa) }>
                 <input type="text" { ...register("pesquisa") }/>
             </form>
         </>

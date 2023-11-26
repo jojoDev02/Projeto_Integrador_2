@@ -50,5 +50,7 @@ def register():
         "tipo": user.tipo.value
     };
     
-    return jsonify({"token": jwtToken, "user": userFormated}), 201;
-    
+    return jsonify({
+        "mensagem": "Usuário cadastrado.",
+        "conteudo": { "token": jwtToken, "usuario": userFormated }
+    }), 201

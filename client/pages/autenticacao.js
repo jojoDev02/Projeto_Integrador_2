@@ -2,11 +2,11 @@ import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { httpPy } from "../src/api";
-import { UserContext } from "./_app";
+import AuthContext from "../src/contexts/auth_context";
 
 export default function Autenticacao() {
     const { register, handleSubmit } = useForm();
-    const { setAuthUser } = useContext(UserContext);
+    const { setUsuarioAuth } = useContext(AuthContext);
     const router = useRouter();
 
     const submit = async (data) => {
@@ -24,16 +24,16 @@ export default function Autenticacao() {
 
     const authenticateUser = async (userData) => {
         const res = await httpPy.post("/authenticate", userData );
+        console.log(res);
 
         const { data, statusCode } = res;
 
         if (statusCode != 200) throw Error(res);
            
-        console.log(res);
 
-        const { user, token } = data;
+        const { usuario, token } = data.conteudo;
 
-        setAuthUser({ ...user, token });
+        setUsuarioAuth({ ...usuario, token });
     }
 
     return (

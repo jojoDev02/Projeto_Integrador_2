@@ -2,11 +2,11 @@ import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { httpPy } from "../src/api";
-import { UserContext } from "./_app";
+import AuthContext from "../src/contexts/auth_context";
 
 export default function Cadastro() {
     const { register, handleSubmit } = useForm();
-    const { setAuthUser } = useContext(UserContext);
+    const { setUsuarioAuth } = useContext(AuthContext);
     const router = useRouter();
 
     const submit = async (data) => {
@@ -35,9 +35,9 @@ export default function Cadastro() {
 
         if (statusCode != 201) throw Error(res);
 
-        const { token, user } = data;
+        const { token, usuario } = data.conteudo;
 
-        setAuthUser({ ...user, token });
+        setUsuarioAuth({ ...usuario, token });
     }
 
     return (

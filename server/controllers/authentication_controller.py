@@ -40,5 +40,8 @@ def authenticate():
         "tipo": userExists.tipo.value
     };
     
-    return jsonify({"token": jwtToken, "user": userFormated}), 200
+    return jsonify({
+        "mensagem": "Usuário autenticado.",
+        "conteudo": { "token": jwtToken, "usuario": userFormated }
+    }), 200
     

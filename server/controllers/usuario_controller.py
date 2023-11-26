@@ -3,6 +3,28 @@ from repositories.usuario_repository import Usuario_Repository;
 
 bp = Blueprint("usuario", __name__, url_prefix="/api/v1/usuarios");
 
+@bp.route("/<int:id>", methods=["GET"])
+def show(id):
+    usuario_repository = Usuario_Repository();
+    usuario = usuario_repository.fetch_by_id(id);
+    
+    if (usuario == None): return jsonify({
+        "mensagem": "Usuário não encontrato.",
+        "conteudo": None
+    }), 404,
+    
+    usuario = {
+        "id": usuario.usuarioId,
+        "nome": usuario.nome,
+        "apelido": usuario.apelido,
+        "email": usuario.email
+    };
+    
+    return jsonify({
+        "mensagem": "Informações do usuário listadas.",
+        "conteudo": usuario
+    }), 200;
+
 @bp.route("/<int:id>/amizades", methods=["GET"])
 def amizades(id):
     
@@ -25,8 +47,8 @@ def amizades(id):
     ];
     
     return jsonify({
-        "message": "Amizades listadas",
-        "content": amizades
+        "mensagem": "Amizades listadas.",
+        "conteudo": amizades
     }), 200
-    
+
     

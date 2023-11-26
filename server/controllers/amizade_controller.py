@@ -24,7 +24,10 @@ def store():
     amizade_repository = Amizade_Repository();
     amizade_repository.create(body);
     
-    return jsonify("Pedido de amizade enviado."), 201
+    return jsonify({
+        "mensagem": "Pedido de amizade enviado.",
+        "conteudo": {}
+    }), 201
 
 @bp.route("/<int:id>", methods=["PUT"])
 def update(id):
@@ -37,7 +40,10 @@ def update(id):
     except Exception as e:
         return jsonify(str(e)), 404;
     
-    return jsonify("Amizade confirmada"), 200;
+    return jsonify({
+        "mensagem": "Amizade confirmada",
+        "conteudo": {}
+    }), 200;
     
     
     

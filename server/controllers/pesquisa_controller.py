@@ -19,6 +19,7 @@ def pesquisar():
 
         usuarios = [
             {
+                "id": usuario.usuarioId,
                 "nome": usuario.nome,
                 "apelido": usuario.apelido,
                 "email": usuario.email,

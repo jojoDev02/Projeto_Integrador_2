@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { httpPy } from "../../src/api";
+import { httpPy } from "../src/api";
 
 
 export default function Pesquisa() {
@@ -24,7 +25,7 @@ export default function Pesquisa() {
         if (!router.isReady) return;
 
         const { p } = router.query;
-
+        console.log("ola mundo");
         try {
             pesquisar(p);
         } catch (err) {
@@ -45,7 +46,9 @@ export default function Pesquisa() {
                                 return dados?.map(dado => {
                                     return (
                                         <ul key={ dado.id }>
-                                            <span>{ dado.apelido }</span>
+                                            <Link href={ `/usuario/${dado.id}` }>
+                                                <span>{ dado.apelido }</span>
+                                            </Link>
                                         </ul>
                                     )
                                 })

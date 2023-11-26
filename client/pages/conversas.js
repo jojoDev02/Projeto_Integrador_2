@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { httpPy } from "../../src/api";
-import WebsocketService from "../../src/services/websocket.service";
-import { UserContext } from "../_app";
+import { httpPy } from "../src/api";
+import WebsocketService from "../src/services/websocket.service";
+import { UserContext } from "./_app";
 
 
 export default function Conversas() {

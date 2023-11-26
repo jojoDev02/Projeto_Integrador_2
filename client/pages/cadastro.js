@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { httpPy } from "../../src/api";
-import { UserContext } from "../_app";
+import { httpPy } from "../src/api";
+import { UserContext } from "./_app";
 
-export default function Autenticacao() {
+export default function Cadastro() {
     const { register, handleSubmit } = useForm();
     const { setAuthUser } = useContext(UserContext);
     const router = useRouter();
@@ -12,8 +12,13 @@ export default function Autenticacao() {
     const submit = async (data) => {
         console.log(data);
 
+        const userData = {
+            ...data,
+            tipo: "viajante"
+        };
+
         try {
-            await authenticateUser(data);
+            await registerUser(userData);
         } catch (err) {
             console.log(err);
             return;
@@ -22,24 +27,31 @@ export default function Autenticacao() {
         router.push("/");
     };
 
-    const authenticateUser = async (userData) => {
-        const res = await httpPy.post("/authenticate", userData );
+    const registerUser = async (userData) => {
+        const res = await httpPy.post("/register", userData);
+        console.log(res);
 
         const { data, statusCode } = res;
 
-        if (statusCode != 200) throw Error(res);
-           
-        console.log(res);
+        if (statusCode != 201) throw Error(res);
 
-        const { user, token } = data;
+        const { token, user } = data;
 
         setAuthUser({ ...user, token });
     }
 
     return (
         <>
-            <h1>Login</h1>
+            <h1>Cadastro</h1>
             <form onSubmit={ handleSubmit(submit) }>
+                <div>
+                    <label>Nome</label>
+                    <input type="text" name="nome" { ...register("nome", { required: true }) }/>
+                </div>
+                <div>
+                    <label>Apelido</label>
+                    <input type="text" name="apelido" { ...register("apelido", { required: true }) }/>
+                </div>
                 <div>
                     <label>Email</label>
                     <input type="email" name="email" { ...register("email", { required: true }) }/>

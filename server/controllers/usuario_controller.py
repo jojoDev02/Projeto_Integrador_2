@@ -37,13 +37,13 @@ def amizades(id):
     amizades_recebidas = usuario.amizades_recebidas;
     amizades = amizades_recebidas + amizades_solicitadas;
 
-    amizades = [
+    amigos = [
         {
-            "id": amizade.amizadeId, 
-            "amigoId": amizade.solicitanteId if amizade.receptorId == id else amizade.receptorId,
-            "status": amizade.status.value
+            "id": amigo.amizadeId, 
+            "amigoId": amigo.solicitanteId if amigo.receptorId == id else amigo.receptorId,
+            "status": amigo.status.value
         }
-        for amizade in amizades
+        for amigo in amigos
     ];
     
     return jsonify({
@@ -51,4 +51,37 @@ def amizades(id):
         "conteudo": amizades
     }), 200
 
+@bp.route("/<int:usuarioId>/amizades/<int:amigoId>", methods=["GET"])
+def amigo(usuarioId, amigoId):
+    usuario_repository = Usuario_Repository();
+    usuario = usuario_repository.fetch_by_id(usuarioId);
+    
+    if (usuario == None): return jsonify({
+        "mensagem": "Usuário não encontrado.",
+        "conteudo": {}
+    }), 404;
+    
+    
+    amizades_solicitadas = usuario.amizades_solicitadas;
+    amizades_recebidas = usuario.amizades_recebidas;
+    amizades = amizades_recebidas + amizades_solicitadas;
+
+    isAmigo = False;
+    
+    for amizade in amizades:
+        if amizade.receptorId == amigoId or amizade.solicitanteId == amigoId:
+            isAmigo = True;
+    
+    if not isAmigo: return jsonify({
+       "mensagem": f"Amigo {amigoId} não encontrado.",
+       "conteudo": {} 
+    }), 404;
+    
+    amigo = usuario_repository.fetch_by_id(amigoId).to_dict();
+    
+    return jsonify({
+        "mensagem": "Amigo encontrado",
+        "conteudo": amigo
+    }), 200;
+    
     

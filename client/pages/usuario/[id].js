@@ -6,8 +6,8 @@ import AuthContext from "../../src/contexts/auth_context";
 export default function Usuario() {
     const router = useRouter();
     const { usuarioAuth, isAuth } = useContext(AuthContext);
-    
-    const [usuario, setUsuario] = useState();
+    const [usuario, setUsuario] = useState({});
+    const [isAmigo, setIsAmigo] = useState(false);
     
     useEffect(() => {
         console.log(usuarioAuth);
@@ -27,6 +27,13 @@ export default function Usuario() {
             buscarUsuario(id);
         } catch (err) {
             console.error(err)
+        }
+
+        try {
+            verificarSeEhAmigo(id);
+            setIsAmigo(true);
+        } catch (err) {
+            setIsAmigo(false);
         }
         
     }, [router]);
@@ -50,14 +57,29 @@ export default function Usuario() {
             console.error(err);
         }
     }
+
+    const removerAmigo = async () => {
+
+    }
     
+    const verificarSeEhAmigo = async (amigoId) => {
+        await httpPy.get(`/usuarios/${usuarioAuth.id}/amizades/${amigoId}`);
+    }
     
     return (
         <div>
             <h1>{ usuario?.apelido }</h1>
             <div>{ usuario?.nome }</div>
 
-            <button onClick={ adicionarAmigo }>+ Adicionar amigo</button>
+            { 
+                usuarioAuth.id != usuario.id ?
+                    isAmigo ? 
+                        <button onClick={ removerAmigo }>- Remover amigo</button> 
+                        : 
+                        <button onClick={ adicionarAmigo }>+ Adicionar amigo</button>
+                    :
+                    "" 
+            }
         </div>
     )
 }

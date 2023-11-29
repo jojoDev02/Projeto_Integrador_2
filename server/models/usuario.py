@@ -39,4 +39,12 @@ class Usuario(Base):
         self.email = email;
         self.senha = senha;
         self.tipo = tipo;
+    
+    def to_dict(self):
+        return {
+            "nome": self.nome,
+            "apelido": self.apelido,
+            "email": self.email,
+            "tipo": self.tipo.value
+        }
         

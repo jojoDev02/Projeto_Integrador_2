@@ -23,4 +23,12 @@ class Amizade(Base):
         self.solicitanteId = solicitanteId;
         self.receptorId = receptorId;
         self.status = status;
+    
+    def to_dict(self):
+        return {
+            "id": self.amizadeId,
+            "solicitanteId": self.solicitanteId,
+            "receptorId": self.receptorId,
+            "status": self.status.value
+        }
         

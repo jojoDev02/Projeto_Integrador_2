@@ -2,9 +2,6 @@ from models.amizade import Amizade;
 from database import db_session;
 
 class Amizade_Repository:
-      
-    def fetch_by_id(self, id):
-        return db_session.query(Amizade).filter(Amizade.amizadeId == id).first();
         
     def create(self, data):
         solicitanteId = data["solicitanteId"];
@@ -37,3 +34,10 @@ class Amizade_Repository:
         
         return amizade;
     
+    def fetch_by_solicitante_and_receptor(self, solicitanteId, receptorId):
+        return db_session.query(Amizade).filter(Amizade.solicitanteId == solicitanteId, Amizade.receptorId == receptorId)
+        
+    def fetch_by_id(self, id):
+        return db_session.query(Amizade).filter(Amizade.amizadeId == id).first();
+        
+   

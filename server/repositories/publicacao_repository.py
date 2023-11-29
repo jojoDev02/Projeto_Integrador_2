@@ -3,6 +3,9 @@ from database import db_session
 from sqlalchemy.orm.exc import NoResultFound
 class PublicacaoRepository:
 
+    def get_all(self):
+        return db_session.query(Publicacao).all()
+
     def fetch_by_id(self, id): 
         return db_session.query(Publicacao).filter(Publicacao.id == id).first()
 

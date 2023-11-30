@@ -30,4 +30,6 @@ const Mensagem = mainInstance.define("Mensagem", {
     timestamps: false
 });
 
+Mensagem.sync();
+
 export default Mensagem;

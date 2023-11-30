@@ -32,4 +32,6 @@ const Usuario = mainInstance.define("Usuario", {
     timestamps: false
 });
 
+Usuario.sync();
+
 export default Usuario;

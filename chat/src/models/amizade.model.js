@@ -26,4 +26,6 @@ const Amizade = mainInstance.define("Amizade", {
     timestamps: false
 });
 
+Amizade.sync();
+
 export default Amizade;

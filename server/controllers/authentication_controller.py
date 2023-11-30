@@ -10,6 +10,8 @@ bp = Blueprint("auth", __name__, url_prefix="/api/v1/authenticate");
 @bp.route("", methods=["POST"])
 def authenticate():
     
+
+    
     body = request.get_json();
     repository = Usuario_Repository();
     email = body["email"];

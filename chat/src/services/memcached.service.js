@@ -1,8 +1,8 @@
 import memjs from "memjs";
 
 class MemcachedService {
-    constructor() {
-        this.memcached = memjs.Client.create();
+    constructor(config = "") {
+        this.memcached = memjs.Client.create(config);
     }
 
     set = async (key, value, options) => {

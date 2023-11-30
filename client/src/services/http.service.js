@@ -14,10 +14,7 @@ class HttpService {
             headers: { ...this.headers, ...headers } 
         });
 
-        const statusCode = res.status;
-        const data = await res.json();
-
-        return { data, statusCode };
+        return await this._handleResponse(res);
     }
 
     post = async (url, body, headers = {}) => {
@@ -27,10 +24,7 @@ class HttpService {
             headers: { ...this.headers, ...headers } 
         });
 
-        const statusCode = res.status;
-        const data = await res.json();
-
-        return { data, statusCode };
+        return await this._handleResponse(res);
     }
 
 
@@ -40,10 +34,7 @@ class HttpService {
             headers: { ...this.headers, ...headers }
         });
 
-        const statusCode = res.status;
-        const data = {};
-
-        return { data, statusCode };
+        return await this._handleResponse(res);
     }
 
     put = async (url, body, headers = {}) => {
@@ -53,6 +44,10 @@ class HttpService {
             headers: { ...this.headers, ...headers }
         });
 
+        return await this._handleResponse(res);
+    }
+
+    _handleResponse = async (res) => {
         const statusCode = res.status;
         const data = await res.json();
 

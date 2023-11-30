@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify;
+from functools import wraps;
 from repositories.usuario_repository import Usuario_Repository;
 
 bp = Blueprint("usuario", __name__, url_prefix="/api/v1/usuarios");

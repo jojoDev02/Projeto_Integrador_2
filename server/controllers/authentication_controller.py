@@ -4,15 +4,16 @@ import bcrypt;
 from jwt import JWT, jwk_from_dict;
 from jwt.utils import get_int_from_datetime;
 from datetime import datetime, timedelta, timezone;
+from middlewares.validacao import empty
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/authenticate");
 
 @bp.route("", methods=["POST"])
+@empty("email")
+@empty("senha")
 def authenticate():
-    
-
-    
     body = request.get_json();
+    
     repository = Usuario_Repository();
     email = body["email"];
     userExists = repository.fetch_by_email(email);

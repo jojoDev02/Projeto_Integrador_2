@@ -5,12 +5,17 @@ import bcrypt;
 from jwt import JWT, jwk_from_dict;
 from jwt.utils import get_int_from_datetime;
 from datetime import datetime, timedelta, timezone;
+from middlewares.validacao import empty;
 
 bp = Blueprint("registration", __name__, url_prefix="/api/v1/register");
 
 @bp.route("", methods=["POST"])
+@empty("email")
+@empty("senha")
+@empty("apelido")
+@empty("tipo")
+@empty("nome")
 def register():
-    
     body = request.get_json();
     
     print(body);
@@ -20,7 +25,10 @@ def register():
     userExists = repository.fetch_by_email(email);
 
     if (userExists != None):
-        return jsonify("Usuario já cadastrado"), 400;
+        return jsonify({
+            "mensagem": "Usuario já cadastrado",
+            "conteudo": {}
+        }), 400;
     
     passwd = body["senha"].encode();
     hashedPass = bcrypt.hashpw(passwd, bcrypt.gensalt(14));

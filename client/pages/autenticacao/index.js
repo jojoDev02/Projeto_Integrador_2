@@ -11,12 +11,13 @@ export default function Autenticacao() {
     const submit = async (data) => {
         console.log(data);
 
+        
         let res;
 
         try {
             res = await fetch("http://localhost:5000/api/v1/authenticate", {
                 method: "POST",
-                body: JSON.stringify(data),
+                body: JSON.stringify(userData),
                 headers: {
                     "Content-Type": "application/json"
                 }

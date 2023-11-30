@@ -4,7 +4,7 @@
 
 Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**.
 
-## CHAT - Serviço 01 - Testes de Carga 01 ##
+# CHAT - Serviço 01 - Testes de Carga 01 
 
 * Tipos de operação: leitura, inserção e atualização
 * O diretório "chat" do repositório é todo dedicado a esta funcionalidade
@@ -34,7 +34,7 @@ Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**
 ![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/chat_concorrencia.png?raw=true)
 
 
-## CHAT - Serviço 01 - Testes de Carga 02 ##
+# CHAT - Serviço 01 - Testes de Carga 02 
 
 * Tipos de operação: leitura, inserção e atualização
 * O diretório "chat" do repositório é todo dedicado a esta funcionalidade
@@ -65,7 +65,7 @@ Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**
 ![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_02_concorrencia_chat.png)
 
 
-## Registrar usuário - Serviço 02 - Carga de Testes 01 ##
+# Registrar usuário - Serviço 02 - Carga de Testes 01 
 
 * Tipos de operação: inserção
 * https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/repositories/usuario_repository.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/models/usuario.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/controllers/registration_controller.py
@@ -93,7 +93,7 @@ Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**
 
 ![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/user_concorrencia.png?raw=true)
 
-## Registrar usuário - Serviço 02 - Carga de Testes 02 ##
+# Registrar usuário - Serviço 02 - Carga de Testes 02 
 
 * Tipos de operação: inserção
 * https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/repositories/usuario_repository.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/models/usuario.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/controllers/registration_controller.py

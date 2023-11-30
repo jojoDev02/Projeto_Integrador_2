@@ -23,7 +23,7 @@ export default function () {
         email: "Maria@gmail.com",
         senha: "123",
         apelido: "Maria Apelio",
-        tipo: "viajante"
+        tipo: "1"
     };
 
     http.post('http://localhost:5000/api/v1/register', JSON.stringify(data), {

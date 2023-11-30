@@ -1,22 +1,23 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Leitura do arquivo CSV
 df = pd.read_csv('file.csv')
 
-# Filtrar os dados relevantes para o gráfico de concorrência
-concurrency_data = df[df['metric_name'].isin(['vus', 'vus_max'])]
+reqs_data = df[df['metric_name'] == 'http_reqs']
 
-# Converter o timestamp para um formato legível
-concurrency_data['timestamp'] = pd.to_datetime(concurrency_data['timestamp'], unit='s')
+reqs_data['timestamp'] = pd.to_datetime(reqs_data['timestamp'], unit='s')
 
-# Criar o gráfico de concorrência
-plt.figure(figsize=(10, 6))
-plt.plot(concurrency_data['timestamp'], concurrency_data['metric_value'], label='VUs')
-plt.plot(concurrency_data['timestamp'], concurrency_data['metric_value'], 'o', label='VUs Max', markersize=8)
-plt.title('Gráfico de Concorrência')
+plt.figure(figsize=(12, 6))
+plt.plot(reqs_data['timestamp'], reqs_data['metric_value'], label='Requisições Simultâneas', marker='o')
+
 plt.xlabel('Timestamp')
-plt.ylabel('Valor')
+plt.ylabel('Requisições Simultâneas')
+plt.title('Limite de Requisições Simultâneas ao longo do Tempo')
 plt.legend()
 plt.grid(True)
+
+reqs_data = df[df['metric_name'] == 'http_reqs']
+numero_de_requisicoes = len(reqs_data)
+print("Número total de requisições simultâneas:", numero_de_requisicoes)
+
 plt.show()

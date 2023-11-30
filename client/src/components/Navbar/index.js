@@ -1,5 +1,7 @@
+import Link from 'next/link';
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+
 
 export default function Navbar() {
 
@@ -24,6 +26,8 @@ export default function Navbar() {
             <form onSubmit={ handleSubmit(redirecionarPesquisa) }>
                 <input type="text" { ...register("pesquisa") }/>
             </form>
+            <Link href="/">Home</Link>
+            <Link href="/conversas">Conversas</Link>
         </>
     )
 }

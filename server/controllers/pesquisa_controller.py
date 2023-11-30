@@ -1,6 +1,5 @@
 from flask import Blueprint, jsonify, request;
 from repositories.usuario_repository import Usuario_Repository;
-from services.serializador_service import Serializador_Service;
 
 bp = Blueprint("pesquisa", __name__, url_prefix="/api/v1/pesquisar");
 

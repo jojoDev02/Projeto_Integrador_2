@@ -34,6 +34,12 @@ class Amizade_Repository:
         
         return amizade;
     
+    def delete(self, id):
+        amizade = self.fetch_by_id(id);
+        
+        db_session.delete(amizade);
+        db_session.commit();
+    
     def fetch_by_solicitante_and_receptor(self, solicitanteId, receptorId):
         return db_session.query(Amizade).filter(Amizade.solicitanteId == solicitanteId, Amizade.receptorId == receptorId)
         

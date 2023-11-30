@@ -32,6 +32,32 @@ class HttpService {
 
         return { data, statusCode };
     }
+
+
+    delete = async (url, headers = {}) => {
+        const res = await fetch(this.baseUrl + url, {
+            method: "DELETE",
+            headers: { ...this.headers, ...headers }
+        });
+
+        const statusCode = res.status;
+        const data = {};
+
+        return { data, statusCode };
+    }
+
+    put = async (url, body, headers = {}) => {
+        const res = await fetch(this.baseUrl + url, {
+            method: "PUT",
+            body: JSON.stringify(body),
+            headers: { ...this.headers, ...headers }
+        });
+
+        const statusCode = res.status;
+        const data = await res.json();
+
+        return { data, statusCode };
+    }
 }
 
 export default HttpService;

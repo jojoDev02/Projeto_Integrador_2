@@ -22,11 +22,11 @@ def store():
         return jsonify("Solicitante não encontrato."), 404;
     
     amizade_repository = Amizade_Repository();
-    amizade_repository.create(body);
+    amizade = amizade_repository.create(body);
     
     return jsonify({
         "mensagem": "Pedido de amizade enviado.",
-        "conteudo": {}
+        "conteudo": amizade.to_dict()
     }), 201
 
 @bp.route("/<int:id>", methods=["PUT"])
@@ -36,16 +36,26 @@ def update(id):
     amizade_repository = Amizade_Repository();
     
     try:
-        amizade_repository.update(id, body);
+        amizade = amizade_repository.update(id, body);
     except Exception as e:
         return jsonify(str(e)), 404;
     
     return jsonify({
         "mensagem": "Amizade confirmada",
-        "conteudo": {}
+        "conteudo": amizade.to_dict()
     }), 200;
     
+
+@bp.route("/<int:id>", methods=["DELETE"])
+def delete(id):
     
+    amizade_repository = Amizade_Repository();
+    amizade_repository.delete(id);
+    
+    return jsonify({
+       "mensagem": "Amizade removida.",
+       "conteudo": {} 
+    }), 204;
     
     
 

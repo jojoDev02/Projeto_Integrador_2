@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { httpPy } from "../src/api";
+import AuthContext from "../src/contexts/auth_context";
 import WebsocketService from "../src/services/websocket.service";
-import { UserContext } from "./_app";
 
 
 export default function Conversas() {
 
-    const { authUser } = useContext(UserContext);
+    const { usuarioAuth } = useContext(AuthContext);
     const [websocket, setWebsocket] = useState(null);
     const [receiver, setReceiver] = useState(-1);
     const [text, setText] = useState("");
@@ -17,15 +17,15 @@ export default function Conversas() {
     const router = useRouter();
 
     useEffect(() => {
-        console.log(authUser);
+        console.log(usuarioAuth);
 
         if (!router.isReady) return;
 
-        console.log(authUser.id);
+        console.log(usuarioAuth.id);
 
-        if (authUser.id == undefined) return;
+        if (usuarioAuth.id == undefined) return;
 
-        const client = new WebsocketService(`ws://localhost:8080/${authUser.id}`);      
+        const client = new WebsocketService(`ws://localhost:8080/${usuarioAuth.id}`);      
 
         setWebsocket(client);
         
@@ -54,7 +54,7 @@ export default function Conversas() {
             
             if (!message || !senderId) return;
 
-            if (senderId != authUser.id) {
+            if (senderId != usuarioAuth.id) {
                 setNotificacoes(prev => { return { ...prev, [senderId]: message } });
 
                 if (senderId != receiver) return;
@@ -71,19 +71,19 @@ export default function Conversas() {
     useEffect(() => {
         const fetchAmigos = async () => {
 
-            if (authUser.id == undefined) return;
+            if (usuarioAuth.id == undefined) return;
     
-            const res = await httpPy.get(`/usuarios/${authUser.id}/amizades`);
+            const res = await httpPy.get(`/usuarios/${usuarioAuth.id}/amizades`);
             
             console.log(res);
 
-            const data = res.data;
+            const { conteudo } = res.data;
     
-            const amigos = data.content;
+           
 
-            console.log(amigos);
+            console.log(conteudo);
 
-            setAmigos(amigos);
+            setAmigos(conteudo);
            
         }
 
@@ -94,7 +94,7 @@ export default function Conversas() {
         event.preventDefault();
     
         if (websocket != null) {
-            const data = { action: "SEND", content: { senderId: authUser.id, receiverId: receiver, message: text } };
+            const data = { action: "SEND", content: { senderId: usuarioAuth.id, receiverId: receiver, message: text } };
             websocket.send(data);
         }
         
@@ -121,7 +121,7 @@ export default function Conversas() {
 
         const data = {
             action: "JOIN",
-            content: { senderId: authUser.id, receiverId }
+            content: { senderId: usuarioAuth.id, receiverId }
         };
 
         websocket.send(data);
@@ -154,7 +154,7 @@ export default function Conversas() {
                                         conversation?.map(el => {
                                             let background = "green";
 
-                                            if (el.senderId == authUser.id) background = "red"; 
+                                            if (el.senderId == usuarioAuth.id) background = "red"; 
                                             
                                             return <div style={{ background }}>{ el.message }</div>
                                         })

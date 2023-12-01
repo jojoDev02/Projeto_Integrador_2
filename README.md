@@ -40,7 +40,7 @@ Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**
 * O diretório "chat" do repositório é todo dedicado a esta funcionalidade
 * Data de medição: 30/11/2023
 * Para o projeto funcionar, é necessário subir o banco de dados e o chat em container
-* Ponto de melhoria: tempo de requisição do serviço. Foi possível otimizar, mas deve-se otimizar mais. A requisição leva em torno de 10 minutos, o que é muito tempo para o cliente esperar.
+* Otimização: mais informações nas dashboards, já que aprimoramos o serviço de chat. Agora é possível ver a taxa de dados do serviço, além de demorar menos tempo nos testes. É possível ver o usuário enviando e o recebimento da mensagem. Um gargalo no teste de carga 01 foi a falta da funcionalidade de desconectar do chat. Ao identificarmos esse problema, resolvemos a funcionalidade e foi possível essa otimização e nova geração de dados.
 * Os testes de carga foram feitos com o grafana/K6, onde foram gerados dashboards com os dados obtidos, além da criação de gráficos da latência, vazão e concorrência a partir de um arquivo .csv. As imagens abaixo são referentes aos testes:
 
 

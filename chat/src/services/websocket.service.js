@@ -86,7 +86,7 @@ class WebsocketService {
             case "JOIN":
                 return this._handleJoin(content);
             case "SEND":
-                return this._handleSend(content);
+                return this._handleSend(content);                
             default:
                 throw Error("Invalid action.");
         }

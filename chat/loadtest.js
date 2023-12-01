@@ -1,10 +1,3 @@
-
-/* padrao pra teste de websocket
-
- ver link para docs: https://k6.io/docs/using-k6/protocols/websockets/
-
- */
-
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 import { check } from 'k6';
 import ws from 'k6/ws';
@@ -30,11 +23,11 @@ export default function () {
     
     socket.setTimeout(() => {
       socket.send(JSON.stringify({ action: "JOIN", content: { senderId: 1, receiverId: 2 } }));
-    }, 500)
+    }, 100)
     
     socket.setInterval(() => {
-      socket.send(JSON.stringify({ action: "SEND", content: { senderId: 1, receiverId: 2, message: "Enviando mensagem."} }));
-    }, 1000);
+      socket.send(JSON.stringify({ action: "SEND", content: { senderId: 1, receiverId: 2, message: "Enviando mensagem..."} }));
+    }, 200);
 
     socket.setTimeout(() => {
       socket.close();

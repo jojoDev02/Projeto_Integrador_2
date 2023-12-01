@@ -32,4 +32,5 @@ const Mensagem = mainInstance.define("Mensagem", {
 
 Mensagem.sync();
 
+
 export default Mensagem;

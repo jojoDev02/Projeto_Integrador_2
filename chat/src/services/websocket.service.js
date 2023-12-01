@@ -51,7 +51,7 @@ class WebsocketService {
     }
 
     _fetchFriends = async (id) => {
-        let friends = undefined//await this.memcachedService.get(`user_${id}_friends`);
+        let friends = await this.memcachedService.get(`user_${id}_friends`);
 
 
         if (!friends) {
@@ -149,6 +149,7 @@ class WebsocketService {
 
     _fetchMessages = async (senderId, receiverId) => {
         const messages = await this.mensagemModel.findAll({
+            limit: 50,
             order: ["dataEnvio"],
             where: {
                 [Op.or]: [

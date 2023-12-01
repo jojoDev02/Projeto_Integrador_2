@@ -142,5 +142,14 @@ const Mensagem = mainInstance.define("Mensagem", {
         })
     }
 
+    for (let i = 1; i <= 100000; i++) {
+        await Mensagem.create({
+            emissorId: 1,
+            receptorId: 2,
+            dataEnvio: new Date(),
+            conteudo: "Enviando mensagem..."
+        })
+    }
+
     await mainInstance.close();
 })()

@@ -1,9 +1,9 @@
 import { DataTypes, Sequelize } from "sequelize";
 
 const config = {
-    host: "localhost",
+    host: "0.0.0.0",
     database: "rede_social",
-    port: "3306",
+    port: "3307",
     dialect: "mysql",
     password: "1234",
     username: "root"

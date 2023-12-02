@@ -1,7 +1,9 @@
-from typing import Any
-from sqlalchemy import String, Integer
+from typing import List
+from sqlalchemy import String, Integer, ForeignKey
 from database import Base
 from sqlalchemy.orm import mapped_column, Mapped, relationship
+
+from server.models.comentario import Comentario
 
 class Publicacao(Base):
 
@@ -11,10 +13,13 @@ class Publicacao(Base):
     conteudo = mapped_column(String(255), nullable=False)
     curtidas = mapped_column(Integer, nullable=True)
     comentarios = Mapped[List["Comentario"]] = relationship(back_populates="publicacao")
-    
-    def __init__(self, conteudo) -> None:
+    usuario_id = Mapped[int] = mapped_column(ForeignKey("Usuario.id"))
+    usuario = relationship("Usuario", back_populates="publicacoes")
+
+    def __init__(self, conteudo, usuario_id) -> None:
         self.conteudo = conteudo
         self.curtidas = 0
+        self.usuario_id = usuario_id
 
     def to_dict(self):
         return {

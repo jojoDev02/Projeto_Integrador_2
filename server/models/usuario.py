@@ -3,7 +3,7 @@ from typing import List;
 from sqlalchemy import Column, Integer, String, Enum;
 from sqlalchemy.orm import Mapped, mapped_column, relationship;
 from database import Base;
-from models.amizade import Amizade;
+from models.amizade import Amizade
 
 class Tipo(enum.Enum):
     viajante = 1;
@@ -18,6 +18,8 @@ class Usuario(Base):
     senha = mapped_column(String(255), nullable=False);
     apelido = mapped_column(String(255), nullable=False, unique=True);
     tipo = mapped_column(Enum(Tipo));
+    
+    roteiros_viagem: Mapped[List["Roteiro_Viagem"]] = relationship(back_populates="usuario");
     
     amizades_solicitadas: Mapped[List["Amizade"]] = relationship(
         "Amizade", 

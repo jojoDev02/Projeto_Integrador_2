@@ -5,7 +5,8 @@ from controllers import (
     authentication_controller,
     amizade_controller,
     usuario_controller,
-    pesquisa_controller
+    pesquisa_controller,
+    roteiro_viagem_controller
 );
 from models.usuario import Usuario;
 from flask_cors import CORS;
@@ -18,5 +19,6 @@ app.register_blueprint(authentication_controller.bp);
 app.register_blueprint(amizade_controller.bp);
 app.register_blueprint(usuario_controller.bp);
 app.register_blueprint(pesquisa_controller.bp);
+app.register_blueprint(roteiro_viagem_controller.bp);
 
 init_db();

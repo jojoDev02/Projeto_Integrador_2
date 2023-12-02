@@ -1,20 +1,21 @@
-import enum;
-from typing import List;
-from sqlalchemy import Column, Integer, String, Enum;
-from sqlalchemy.orm import Mapped, mapped_column, relationship;
+from sqlalchemy import Column, Integer, String, Text, ForeignKey;
+from sqlalchemy.orm import Mapped, relationship, mapped_column;
 from database import Base;
-from models.amizade import Amizade;
 
-class Usuario(Base):
-    __tablename__ = 'Usuario';
+class Roteiro_Viagem(Base):
+    __tablename__ = 'RoteiroViagem';
 
     roteiroViagemId = Column(Integer, primary_key=True);
     titulo = Column(String(255), nullable=False);
-
+    conteudo = Column(Text, nullable=False);
+    usuarioId: Mapped[int] = mapped_column(ForeignKey("Usuario.usuarioId"))
+    
+    usuario: Mapped["Usuario"] = relationship(back_populates="roteiros_viagem")
  
-    def __init__(self, titulo, conteudo):
+    def __init__(self, titulo, conteudo, usuario_id):
         self.titulo = titulo;
         self.conteudo = conteudo;
+        self.usuarioId = usuario_id;
     
     def to_dict(self):
         return {

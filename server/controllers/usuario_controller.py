@@ -62,24 +62,6 @@ def amizade(usuarioId, amigoId):
         "conteudo": {}
     }), 404;
     
-    
-    # amizades_solicitadas = usuario.amizades_solicitadas;
-    
-    # amizade = [amizade_solicitada for amizade_solicitada in amizades_solicitadas if amizade_solicitada.receptorId == amigoId]; 
-    
-    # if amizade: return jsonify({
-    #     "mensagem": "Amizade encontrada.",
-    #     "conteudo": {"status": amizade[0].status.value, "solicitante": usuarioId, "receptor": amigoId}
-    # })
-
-    # amizades_recebidas = usuario.amizades_recebidas;
-    # amizade = [amizade_recebida for amizade_recebida in amizades_recebidas if amizade_recebida.solicitanteId == amigoId]; 
-    
-    # if amizade: return jsonify({
-    #     "mensagem": "Amizade encontrada.",
-    #     "conteudo": {"status": amizade[0].status.value, "solicitante": amigoId, "receptor": usuarioId}
-    # })
-    
     amizades_solicitadas = usuario.amizades_solicitadas;
     amizades_recebidas = usuario.amizades_recebidas;
     amizades = amizades_recebidas + amizades_solicitadas;

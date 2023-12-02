@@ -14,9 +14,9 @@ class Usuario(Base):
 
     usuarioId: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True);
     nome = mapped_column(String(255), nullable=False);
-    email = mapped_column(String(255), nullable=False);
+    email = mapped_column(String(255), nullable=False, unique=True);
     senha = mapped_column(String(255), nullable=False);
-    apelido = mapped_column(String(255), nullable=False);
+    apelido = mapped_column(String(255), nullable=False, unique=True);
     tipo = mapped_column(Enum(Tipo));
     
     amizades_solicitadas: Mapped[List["Amizade"]] = relationship(

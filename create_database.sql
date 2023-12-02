@@ -199,3 +199,11 @@ ALTER TABLE Avaliacao
 ADD usuarioId INT,
 ADD CONSTRAINT fk_usuario_avaliacao
 FOREIGN KEY (usuarioId) REFERENCES Usuario(usuarioId);
+
+ALTER TABLE Usuario
+ADD CONSTRAINT unique_email
+UNIQUE (email);
+
+ALTER TABLE Usuario
+ADD CONSTRAINT unique_apelido
+UNIQUE (apelido);

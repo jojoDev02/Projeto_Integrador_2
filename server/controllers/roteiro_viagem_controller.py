@@ -50,23 +50,36 @@ def index():
     
 @bp.route("/<int:id>", methods=["GET"])
 def show(id):
-    
     roteiro_viagem_repository = Roteiro_Viagem_Repository();
     roteiro_viagem = roteiro_viagem_repository.fetch_by_id(id);
     
     if roteiro_viagem == None: return jsonify({
         "mensagem": "Roteiro de viagem não encontrado.",
         "conteudo": {}
-    }), 404;
+    }), 404;      
+    
+    mostrar_avaliacoes = int(request.args.get("avaliacoes")); 
+    avaliacoes_roteiro = [];
+    if (mostrar_avaliacoes):
+        
+        if (mostrar_avaliacoes == "all"):
+            avaliacoes_roteiro = [avaliacao.to_dict() for avaliacao in roteiro_viagem.avaliacoes];
+        else:
+            avaliacoes_roteiro = [avaliacao.to_dict() for avaliacao in roteiro_viagem.avaliacoes if avaliacao.avaliacaoId == mostrar_avaliacoes];
+            avaliacoes_roteiro = avaliacoes_roteiro[0] if avaliacoes_roteiro else []
+        
+    roteiro_viagem = roteiro_viagem.to_dict();
+    
+    if (avaliacoes_roteiro): roteiro_viagem["avaliacoes"] = avaliacoes_roteiro;
     
     return jsonify({
         "mensagem": "Roteiro de viagem encontrado.",
-        "conteudo": roteiro_viagem.to_dict()
+        "conteudo": roteiro_viagem
     }), 200;
     
 @bp.route("/<int:id>", methods=["PUT"])
-@body("titulo", [Is_Empty, Is_String])
-@body("conteudo", [Is_Empty, Is_String])
+@body("titulo", [Is_Empty(), Is_String()])
+@body("conteudo", [Is_Empty(), Is_String()])
 def update(id):
     body = request.get_json();
     
@@ -101,3 +114,4 @@ def destroy(id):
         "mensagem": "Roteiro de viagem excluído.",
         "conteudo": {}
     }), 204;
+    

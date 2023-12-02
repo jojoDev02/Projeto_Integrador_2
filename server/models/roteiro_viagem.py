@@ -21,8 +21,9 @@ class Roteiro_Viagem(Base):
     
     def to_dict(self):
         return {
-            "roteiroViagemId": self.roteiroViagemId,
+            "roteiro_viagem_id": self.roteiroViagemId,
             "titulo": self.titulo,
             "conteudo": self.conteudo,
-        }
+            "usuario_id": self.usuarioId
+        };
         

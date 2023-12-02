@@ -1,20 +1,20 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Carregar o arquivo CSV em um DataFrame do Pandas
 df = pd.read_csv('file.csv')
 
-# Filtrar os dados relevantes para latência (http_req_duration)
-latency_data = df[df['metric_name'] == 'http_req_duration']
+df_duration = df[df['metric_name'] == 'http_req_duration']
 
-# Converter o timestamp para um formato de data compreensível
-latency_data['timestamp'] = pd.to_datetime(latency_data['timestamp'], unit='s')
+df_duration['timestamp'] = pd.to_datetime(df_duration['timestamp'], unit='s')
 
-# Criar um gráfico de linha para a latência
-plt.figure(figsize=(10, 6))
-plt.plot(latency_data['timestamp'], latency_data['metric_value'], marker='o', linestyle='-', color='b')
-plt.title('Latência ao longo do tempo')
+avg_duration = df_duration['metric_value'].mean()
+
+plt.figure(figsize=(12, 6))
+plt.plot(df_duration['timestamp'], df_duration['metric_value'], label='Tempo de Requisição')
+plt.axhline(y=avg_duration, color='r', linestyle='--', label='Tempo Médio')
+
 plt.xlabel('Timestamp')
-plt.ylabel('Latência (ms)')
-plt.grid(True)
+plt.ylabel('Tempo de Requisição (ms)')
+plt.title('Tempo Médio de Requisição ao Longo do Tempo')
+plt.legend()
 plt.show()

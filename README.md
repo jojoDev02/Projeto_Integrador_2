@@ -4,7 +4,7 @@
 
 Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**.
 
-# CHAT - Serviço 01 - Testes de Carga 01 
+## CHAT - Serviço 01 ##
 
 * Tipos de operação: leitura, inserção e atualização
 * O diretório "chat" do repositório é todo dedicado a esta funcionalidade
@@ -67,6 +67,7 @@ Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**
 
 
 # Registrar usuário - Serviço 02 - Carga de Testes 01 
+## Registrar usuário - Serviço 02 ##
 
 * Tipos de operação: inserção
 * https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/repositories/usuario_repository.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/models/usuario.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/controllers/registration_controller.py

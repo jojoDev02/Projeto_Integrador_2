@@ -20,6 +20,7 @@ class Usuario(Base):
     tipo = mapped_column(Enum(Tipo));
     
     roteiros_viagem: Mapped[List["Roteiro_Viagem"]] = relationship(back_populates="usuario");
+    avaliacoes: Mapped[List["Avaliacao"]] = relationship(back_populates="usuario");
     
     amizades_solicitadas: Mapped[List["Amizade"]] = relationship(
         "Amizade", 

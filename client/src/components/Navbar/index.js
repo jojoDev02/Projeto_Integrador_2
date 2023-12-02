@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 export default function Navbar() {
 
     const { handleSubmit, register } = useForm();
-    const router = useRouter()
+    const router = useRouter();
 
     const redirecionarPesquisa = (data) => {
         
@@ -28,6 +28,7 @@ export default function Navbar() {
             </form>
             <Link href="/">Home</Link>
             <Link href="/conversas">Conversas</Link>
+
         </>
     )
 }

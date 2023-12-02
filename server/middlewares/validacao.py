@@ -9,12 +9,11 @@ def body(campo, regras):
             
             pilha = [];
             
-            for Regra in regras:
-                regra = Regra();
+            for regra in regras:
                 res = regra.validar(campo, body);
                 
                 if not res["status"]:
-                    pilha.append(res["conteudo"]);
+                    pilha.append(res["mensagem"]);
                     
             if pilha:
                 conteudo_resposta = {campo: []};

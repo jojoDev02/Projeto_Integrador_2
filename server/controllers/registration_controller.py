@@ -6,16 +6,17 @@ from jwt import JWT, jwk_from_dict;
 from jwt.utils import get_int_from_datetime;
 from datetime import datetime, timedelta, timezone;
 from middlewares.validacao import body;
-from services.empty import Empty
+from services.is_empty import Is_Empty;
+from services.is_string import Is_String;
 
 bp = Blueprint("registration", __name__, url_prefix="/api/v1/register");
 
 @bp.route("", methods=["POST"])
-@body("email", [Empty])
-@body("senha", [Empty])
-@body("apelido", [Empty])
-@body("tipo", [Empty])
-@body("nome", [Empty])
+@body("email", [Is_Empty(), Is_String()])
+@body("senha", [Is_Empty(), Is_String()])
+@body("apelido", [Is_Empty(), Is_String()])
+@body("tipo", [Is_Empty(), Is_String()])
+@body("nome", [Is_Empty(), Is_String()])
 def register():
     body = request.get_json();
     

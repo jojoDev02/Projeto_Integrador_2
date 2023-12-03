@@ -1,7 +1,7 @@
 from flask import Blueprint, request;
 from flask.json import jsonify;
 from middlewares.validacao import body;
-from server.services.empty import Empty;
+from services.empty import Empty;
 from services.integer import Integer;
 from services.string import String;
 from services.max import Max;

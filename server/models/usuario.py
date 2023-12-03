@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, Enum;
 from sqlalchemy.orm import Mapped, mapped_column, relationship;
 from database import Base;
 from models.amizade import Amizade
-
+from models.comunidade_usuario import Comunidade_Usuario;
 class Tipo(enum.Enum):
     viajante = 1;
     representante_localidade = 2;
@@ -21,6 +21,10 @@ class Usuario(Base):
     
     roteiros_viagem: Mapped[List["Roteiro_Viagem"]] = relationship(back_populates="usuario");
     avaliacoes: Mapped[List["Avaliacao"]] = relationship(back_populates="usuario");
+    comunidades: Mapped[List["Comunidade"]] = relationship(
+        secondary=Comunidade_Usuario,
+        back_populates="usuarios"
+    );
     
     amizades_solicitadas: Mapped[List["Amizade"]] = relationship(
         "Amizade", 

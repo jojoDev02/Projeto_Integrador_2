@@ -27,7 +27,7 @@ def show(id):
     }), 200;
 
 @bp.route("/<int:id>/amizades", methods=["GET"])
-def amizades(id):
+def list_amizades(id):
     
     usuario_repository = Usuario_Repository();
     usuario = usuario_repository.fetch_by_id(id);
@@ -53,7 +53,7 @@ def amizades(id):
     }), 200
 
 @bp.route("/<int:usuarioId>/amizades/<int:amigoId>", methods=["GET"])
-def amizade(usuarioId, amigoId):
+def show_amizade(usuarioId, amigoId):
     usuario_repository = Usuario_Repository();
     usuario = usuario_repository.fetch_by_id(usuarioId);
     

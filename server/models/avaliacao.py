@@ -22,8 +22,10 @@ class Avaliacao(Base):
     
     def to_dict(self):
         return {
-            "avaliacao_id": self.avaliacaoId,
+            "avaliacaoId": self.avaliacaoId,
             "nota": self.nota,
             "texto": self.texto,
+            "usuarioId": self.usuarioId,
+            "roteiroViagemId": self.roteiroViagemId
         }
         

@@ -13,9 +13,4 @@ Base.query = db_session.query_property();
 def init_db():
     
     import models;
-    
     Base.metadata.create_all(bind=engine);
-    tables = Base.metadata.tables;
-
-    for table in tables:
-        print(table);

@@ -1,6 +1,7 @@
 from models.usuario import Usuario;
 from database import db_session;
 from sqlalchemy import or_;
+from models.comunidade_usuario import Comunidade_Usuario;
 
 class Usuario_Repository:
     
@@ -40,6 +41,4 @@ class Usuario_Repository:
         db_session.commit();
         
         return usuario;
-    
-  
-    
+

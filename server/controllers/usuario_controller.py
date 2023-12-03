@@ -1,6 +1,13 @@
 from flask import Blueprint, request, jsonify;
 from functools import wraps;
+from repositories.comunidade_repository import Comunidade_Repository;
 from repositories.usuario_repository import Usuario_Repository;
+from middlewares.validacao import body;
+from services.empty import Empty;
+from services.string import String;
+from models.comunidade import Comunidade;
+from models.comunidade_usuario import Comunidade_Usuario;
+from database import db_session;
 
 bp = Blueprint("usuario", __name__, url_prefix="/api/v1/usuarios");
 
@@ -82,5 +89,30 @@ def show_amizade(usuarioId, amigoId):
         "conteudo": amizade_buscada[0].to_dict()
     }), 200;
     
+@bp.route("/<int:id>/comunidades", methods=["POST"])
+@body("nome", [Empty(), String()])
+def store_comunidade(id):
+    body = request.get_json();
+    
+    usuario_repository = Usuario_Repository()
+    usuario = usuario_repository.fetch_by_id(id);
+    
+    comunidade_repository = Comunidade_Repository();
+    comunidade = comunidade_repository.create(body);
+    
+    db_session.add(comunidade);    
+    
+    associacao = Comunidade_Usuario(cargo="dono");
+    associacao.comunidade = comunidade;
+    
+    usuario.comunidades.append(associacao);
+    
+    db_session.add(associacao);
+    db_session.commit();
+        
+    return jsonify({
+        "mensagem": "Comunidade criada.",
+        "conteudo": comunidade.to_dict()
+    }), 201;
     
     

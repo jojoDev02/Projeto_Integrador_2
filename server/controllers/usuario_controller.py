@@ -114,5 +114,14 @@ def store_comunidade(id):
         "mensagem": "Comunidade criada.",
         "conteudo": comunidade.to_dict()
     }), 201;
+
+@bp.route("/<int:usuarioId>/comunidades/<int:comunidadeId>", methods=["DELETE"])
+def destroy_comunidade(usuarioId, comunidadeId):
     
+    usuario_repository = Usuario_Repository()
+    usuario = usuario_repository.fetch_by_id(usuarioId);
     
+    if usuario == None: return jsonify({
+        "mensagem": "Usuário não encontrado.",
+        "conteudo": {}
+    }), 404;

@@ -7,7 +7,11 @@ class PublicacaoRepository:
         return db_session.query(Publicacao).all()
 
     def fetch_by_id(self, id): 
-        return db_session.query(Publicacao).filter(Publicacao.id == id).first()
+        publicacao = db_session.query(Publicacao).filter(Publicacao.id == id).first()
+        if publicacao:
+            return publicacao
+        else:
+            raise NoResultFound("Publicação não encontrada.")
 
     def create(self, data):
 
@@ -18,24 +22,23 @@ class PublicacaoRepository:
         db_session.add(publicacao)
         db_session.commit()
 
+    def add_like(self, id):
+        publicacao = self.fetch_by_id(id)
+        publicacao.curtidas += 1
+        db_session.commit()
+    
 
     def update(self, id, novo_conteudo):
-
         publicacao = self.fetch_by_id(id)
-
-        if publicacao:
-            publicacao.conteudo = novo_conteudo
-            db_session.commit()
-        else:
-            raise NoResultFound("Publicação não encontrada.")
-
+        publicacao.conteudo = novo_conteudo
+        db_session.commit()
+      
+            
     def delete(self, id): 
         publicacao = self.fetch_by_id(id)
-        if publicacao:
-            db_session.delete(publicacao)
-            db_session.commit()
-        else:
-            raise NoResultFound("Publicação não encontrada.")
+        db_session.delete(publicacao)
+        db_session.commit()
+
         
 
 

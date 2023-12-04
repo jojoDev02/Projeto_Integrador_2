@@ -4,6 +4,8 @@ from sqlalchemy import Column, Integer, String, Enum;
 from sqlalchemy.orm import Mapped, mapped_column, relationship;
 from database import Base;
 from models.amizade import Amizade
+from models.publicacao import Publicacao;
+
 class Tipo(enum.Enum):
     viajante = 1;
     representante_localidade = 2;
@@ -35,6 +37,13 @@ class Usuario(Base):
         foreign_keys=[Amizade.receptorId], 
         back_populates="receptor"
     );
+
+    publicacoes: Mapped[List[Publicacao]] = relationship(
+        "Publicacao", 
+        cascade="all, delete", 
+        foreign_keys=[Publicacao.id], 
+        back_populates="usuario"
+    )
     
     def __init__(self, nome, apelido, email, senha, tipo):
         self.nome = nome;

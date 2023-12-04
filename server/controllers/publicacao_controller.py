@@ -31,6 +31,14 @@ def create():
         return {"messagem": "Publicação criada com sucesso."}, 200
     except Exception as e:
         return {"error" : "{}".format(e.args)}, 500
+    
+@bp.route("/<int:id>/curtir", methods=["POST"])
+def like(publicação_id):
+    try:
+        publicacao_repository.add_like(publicação_id)
+        return 200
+    except Exception as e:
+        return {"error": "{}".format(e.args)}, 500
 
 @bp.route("/<int:id>", methods=["PUT"])
 def update(publicacao_id):

@@ -23,8 +23,9 @@ class Comunidade_Repository:
     def update(self, id, data):
         pass;
         
-    def delete(self, id):
-        pass;
+    def delete(self, comunidade):        
+        db_session.delete(comunidade);
+        db_session.commit();
 
         
 

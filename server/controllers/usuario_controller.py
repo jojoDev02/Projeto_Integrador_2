@@ -130,3 +130,28 @@ def destroy_comunidade(usuarioId, comunidadeId):
         "mensagem": "Usuário não encontrado.",
         "conteudo": {}
     }), 404;
+    
+    comunidade_repository = Comunidade_Repository();
+    comunidade = comunidade_repository.fetch_by_id(comunidadeId); 
+    
+    if comunidade == None: return jsonify({
+        "mensagem": "Comunidade não encontrada.",
+        "conteudo": {}
+    }), 404;
+    
+    associacao = db_session.query(Comunidade_Usuario).filter(
+        Comunidade_Usuario.usuarioId == usuarioId, 
+        Comunidade_Usuario.comunidadeId == comunidadeId
+    ).first();
+    
+    if associacao.cargo.value != 1: return jsonify({
+        "mensagem": "Somente o dono pode remover a comunidade.",
+        "conteudo": {}
+    }), 400;
+    
+    comunidade_repository.delete(comunidade);
+    
+    return jsonify({
+        "mensagem": "Comunidade removida",
+        "conteudo": {}
+    }), 204;

@@ -4,7 +4,6 @@ from sqlalchemy import Column, Integer, String, Enum;
 from sqlalchemy.orm import Mapped, mapped_column, relationship;
 from database import Base;
 from models.amizade import Amizade
-from models.publicacao import Publicacao;
 
 class Tipo(enum.Enum):
     viajante = 1;
@@ -23,25 +22,20 @@ class Usuario(Base):
     roteiros_viagem: Mapped[List["Roteiro_Viagem"]] = relationship(back_populates="usuario");
     avaliacoes: Mapped[List["Avaliacao"]] = relationship(back_populates="usuario");
     comunidades: Mapped[List["Comunidade_Usuario"]] = relationship(back_populates="usuario");
-    
     amizades_solicitadas: Mapped[List["Amizade"]] = relationship(
         "Amizade", 
         cascade="all, delete", 
         foreign_keys=[Amizade.solicitanteId], 
         back_populates="solicitante"
     );
-    
     amizades_recebidas: Mapped[List["Amizade"]] = relationship(
         "Amizade", 
         cascade="all, delete", 
         foreign_keys=[Amizade.receptorId], 
         back_populates="receptor"
     );
-
-    publicacoes: Mapped[List[Publicacao]] = relationship(
-        "Publicacao", 
+    publicacoes: Mapped[List["Publicacao"]] = relationship(
         cascade="all, delete", 
-        foreign_keys=[Publicacao.id], 
         back_populates="usuario"
     )
     
@@ -54,6 +48,7 @@ class Usuario(Base):
     
     def to_dict(self):
         return {
+            "usuarioId": self.usuarioId,
             "nome": self.nome,
             "apelido": self.apelido,
             "email": self.email,

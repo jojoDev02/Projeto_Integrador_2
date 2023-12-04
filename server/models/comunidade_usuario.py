@@ -14,8 +14,8 @@ class Comunidade_Usuario(Base):
     comunidadeId: Mapped[int] = mapped_column(ForeignKey("Comunidade.comunidadeId"), primary_key=True);
     cargo = Column(Enum(Cargo), nullable=False);
     
-    comunidade: Mapped["Comunidade"] = relationship(back_populates="usuarios")
-    usuario: Mapped["Usuario"] = relationship(back_populates="comunidades");
+    comunidade: Mapped["Comunidade"] = relationship(back_populates="usuarios", cascade="all, delete")
+    usuario: Mapped["Usuario"] = relationship(back_populates="comunidades", cascade="all, delete");
     
     def __init__(self, cargo):
         self.cargo = cargo;

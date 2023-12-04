@@ -9,7 +9,7 @@ class Comunidade(Base):
     comunidadeId: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True);
     nome = Column(String(255), nullable=True);
     
-    usuarios: Mapped[List["Comunidade_Usuario"]] = relationship(back_populates="comunidade");
+    usuarios: Mapped[List["Comunidade_Usuario"]] = relationship(back_populates="comunidade", cascade="all, delete");
     publicacoes: Mapped[List["Publicacao"]] = relationship(back_populates="comunidade");
     
     def __init__(self, nome):

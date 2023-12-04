@@ -12,7 +12,7 @@ def get_all():
         resultado = [publicacao.to_dict() for publicacao in resultado]
         return resultado, 200
     else:
-        return [], 201
+        return [], 204
 
 @bp.route("/<int:id>", methods=["GET"])
 def get(publicacao_id):

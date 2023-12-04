@@ -97,6 +97,11 @@ def store_comunidade(id):
     usuario_repository = Usuario_Repository()
     usuario = usuario_repository.fetch_by_id(id);
     
+    if usuario == None: return jsonify({
+        "mensagem": "Usuário não encontrado.",
+        "conteudo": {}
+    }), 404;
+    
     comunidade_repository = Comunidade_Repository();
     comunidade = comunidade_repository.create(body);
     

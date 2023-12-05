@@ -17,7 +17,8 @@ class PublicacaoRepository:
 
         usuario_id = data["usuario_id"]
         conteudo = data["conteudo"]
-        publicacao = Publicacao(conteudo)
+        
+        publicacao = Publicacao(conteudo, usuario_id)
 
         db_session.add(publicacao)
         db_session.commit()

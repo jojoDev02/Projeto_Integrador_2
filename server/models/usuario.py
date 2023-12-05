@@ -1,9 +1,9 @@
 import enum;
 from typing import List;
-from sqlalchemy import Column, Integer, String, Enum;
+from sqlalchemy import Integer, String, Enum;
 from sqlalchemy.orm import Mapped, mapped_column, relationship;
 from database import Base;
-from models.amizade import Amizade
+from models.amizade import Amizade;
 
 class Tipo(enum.Enum):
     viajante = 1;
@@ -21,6 +21,7 @@ class Usuario(Base):
     
     roteiros_viagem: Mapped[List["Roteiro_Viagem"]] = relationship(back_populates="usuario");
     avaliacoes: Mapped[List["Avaliacao"]] = relationship(back_populates="usuario");
+    eventos: Mapped[List["Evento_Usuario"]] = relationship(back_populates="usuario");
     comunidades: Mapped[List["Comunidade_Usuario"]] = relationship(back_populates="usuario");
     amizades_solicitadas: Mapped[List["Amizade"]] = relationship(
         "Amizade", 

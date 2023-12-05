@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify;
 from functools import wraps;
-from repositories.evento_repository import evento_Repository;
+from repositories.evento_repository import Evento_Repository;
 from middlewares.validacao import body;
 from services.empty import Empty;
 from services.string import String;
@@ -25,7 +25,7 @@ def show(id):
     evento_repository = Evento_Repository();
     evento = evento_repository.fetch_by_id(id);
     
-    if comunidade == None: return jsonify({
+    if evento == None: return jsonify({
         "mensagem": "Evento não encontrado.",
         "conteudo": {}
     }), 404;

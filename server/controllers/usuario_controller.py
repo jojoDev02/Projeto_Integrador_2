@@ -7,19 +7,18 @@ from services.empty import Empty;
 from services.string import String;
 from models.comunidade import Comunidade;
 from models.comunidade_usuario import Comunidade_Usuario;
+from repositories.evento_repository import Evento_Repository;
 from database import db_session;
+from middlewares.usuario_existe import usuario_existe;
+from models.evento_usuario import Evento_Usuario;
 
 bp = Blueprint("usuario", __name__, url_prefix="/api/v1/usuarios");
 
-@bp.route("/<int:id>", methods=["GET"])
-def show(id):
+@bp.route("/<int:usuarioId>", methods=["GET"])
+@usuario_existe
+def show(usuarioId, usuario):
     usuario_repository = Usuario_Repository();
     usuario = usuario_repository.fetch_by_id(id);
-    
-    if (usuario == None): return jsonify({
-        "mensagem": "Usuário não encontrato.",
-        "conteudo": None
-    }), 404,
     
     usuario = {
         "id": usuario.usuarioId,
@@ -33,8 +32,9 @@ def show(id):
         "conteudo": usuario
     }), 200;
 
-@bp.route("/<int:id>/amizades", methods=["GET"])
-def list_amizades(id):
+@bp.route("/<int:usuarioId>/amizades", methods=["GET"])
+@usuario_existe
+def list_amizades(usuarioId, usuario):
     
     usuario_repository = Usuario_Repository();
     usuario = usuario_repository.fetch_by_id(id);
@@ -60,14 +60,10 @@ def list_amizades(id):
     }), 200
 
 @bp.route("/<int:usuarioId>/amizades/<int:amigoId>", methods=["GET"])
-def show_amizade(usuarioId, amigoId):
+@usuario_existe
+def show_amizade(usuarioId, amigoId, usuario):
     usuario_repository = Usuario_Repository();
     usuario = usuario_repository.fetch_by_id(usuarioId);
-    
-    if (usuario == None): return jsonify({
-        "mensagem": "Usuário não encontrado.",
-        "conteudo": {}
-    }), 404;
     
     amizades_solicitadas = usuario.amizades_solicitadas;
     amizades_recebidas = usuario.amizades_recebidas;
@@ -89,18 +85,14 @@ def show_amizade(usuarioId, amigoId):
         "conteudo": amizade_buscada[0].to_dict()
     }), 200;
     
-@bp.route("/<int:id>/comunidades", methods=["POST"])
+@bp.route("/<int:usuarioId>/comunidades", methods=["POST"])
+@usuario_existe
 @body("nome", [Empty(), String()])
-def store_comunidade(id):
+def store_comunidade(usuarioId, usuario):
     body = request.get_json();
     
     usuario_repository = Usuario_Repository()
     usuario = usuario_repository.fetch_by_id(id);
-    
-    if usuario == None: return jsonify({
-        "mensagem": "Usuário não encontrado.",
-        "conteudo": {}
-    }), 404;
     
     comunidade_repository = Comunidade_Repository();
     comunidade = comunidade_repository.create(body);
@@ -121,16 +113,9 @@ def store_comunidade(id):
     }), 201;
 
 @bp.route("/<int:usuarioId>/comunidades/<int:comunidadeId>", methods=["DELETE"])
-def destroy_comunidade(usuarioId, comunidadeId):
-    
-    usuario_repository = Usuario_Repository()
-    usuario = usuario_repository.fetch_by_id(usuarioId);
-    
-    if usuario == None: return jsonify({
-        "mensagem": "Usuário não encontrado.",
-        "conteudo": {}
-    }), 404;
-    
+@usuario_existe
+def destroy_comunidade(usuarioId, comunidadeId, usuario):
+       
     comunidade_repository = Comunidade_Repository();
     comunidade = comunidade_repository.fetch_by_id(comunidadeId); 
     
@@ -147,11 +132,68 @@ def destroy_comunidade(usuarioId, comunidadeId):
     if associacao.cargo.value != 1: return jsonify({
         "mensagem": "Somente o dono pode remover a comunidade.",
         "conteudo": {}
-    }), 400;
+    }), 403;
     
     comunidade_repository.delete(comunidade);
     
     return jsonify({
         "mensagem": "Comunidade removida",
+        "conteudo": {}
+    }), 204;
+    
+@bp.route("/<int:usuarioId>/eventos", methods=["POST"])
+@usuario_existe
+@body("titulo", [Empty(), String()])
+@body("descricao", [Empty(), String()])
+@body("horario", [Empty(), String()])
+@body("data_evento", [Empty(), String()])
+def store_evento(usuarioId, usuario):
+    body = request.get_json();
+    
+    dados = body;
+    dados["usuarioId"] = usuario.usuarioId;
+    
+    evento_repository = Evento_Repository()
+    evento = evento_repository.create(dados);
+    
+    db_session.add(evento);
+    
+    evento_usuario = Evento_Usuario(cargo="dono");
+    evento_usuario.evento = evento;
+    usuario.eventos.append(evento_usuario);
+    
+    db_session.add(evento_usuario);
+    db_session.commit();
+    
+    return jsonify({
+        "mensagem": "Evento criado.",
+        "conteudo": evento.to_dict() 
+    });
+
+@bp.route("/<int:usuarioId>/eventos/<int:eventoId>", methods=["DELETE"])
+@usuario_existe
+def destroy_evento(usuarioId, eventoId, usuario):
+    evento_repository = Evento_Repository();
+    evento = evento_repository.fetch_by_id(eventoId);
+    
+    if evento == None: return jsonify({
+        "mensagem": "Evento não encontrado.",
+        "conteudo": {}
+    }), 404;
+    
+    evento_usuario = db_session.query(Evento_Usuario).filter(
+        Evento_Usuario.usuarioId == usuario.usuarioId, 
+        Evento_Usuario.eventoId == eventoId
+    ).first();
+    
+    if evento_usuario == None: return jsonify({
+        "mensagem": "Somente o dono pode remover o evento.",
+        "conteudo": {}
+    }), 403;
+    
+    evento_repository.delete(evento);
+    
+    return jsonify({
+        "mensagem": "Evento removido",
         "conteudo": {}
     }), 204;

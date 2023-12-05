@@ -100,7 +100,7 @@ CREATE TABLE Amizade (
     amizadeId INT AUTO_INCREMENT,
     solicitanteId INT,
     receptorId INT,
-    status ENUM("pendente", "confirmada"),
+    status ENUM('pendente', 'confirmada'),
     PRIMARY KEY (amizadeId, solicitanteId, receptorId)
 );
 
@@ -192,3 +192,6 @@ UNIQUE (email);
 ALTER TABLE Usuario
 ADD CONSTRAINT unique_apelido
 UNIQUE (apelido);
+
+ALTER TABLE Evento_Usuario
+ADD cargo ENUM('dono', 'participante') NOT NULL;

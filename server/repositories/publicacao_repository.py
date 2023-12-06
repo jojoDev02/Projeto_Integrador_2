@@ -7,7 +7,7 @@ class PublicacaoRepository:
         return db_session.query(Publicacao).all()
 
     def fetch_by_id(self, id): 
-        publicacao = db_session.query(Publicacao).filter(Publicacao.id == id).first()
+        publicacao = db_session.query(Publicacao).filter(Publicacao.publicacaoId == id).first()
         if publicacao:
             return publicacao
         else:
@@ -15,9 +15,9 @@ class PublicacaoRepository:
 
     def create(self, data):
 
-        usuario_id = data["usuario_id"]
+        usuarioId = data["usuarioId"]
         conteudo = data["conteudo"]
-        publicacao = Publicacao(conteudo)
+        publicacao = Publicacao(conteudo=conteudo, usuarioId=usuarioId)
 
         db_session.add(publicacao)
         db_session.commit()

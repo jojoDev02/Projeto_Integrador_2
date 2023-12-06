@@ -38,15 +38,9 @@ def authenticate():
     key = jwk_from_dict({"kty": "oct", "k": "GawgguFyGrWKav7AX4VKUg"});
     jwtToken = jwtInstance.encode(message, key, alg="HS256");
     
-    userFormated = {
-        "id": userExists.usuarioId, 
-        "email": userExists.email, 
-        "apelido": userExists.apelido,
-        "tipo": userExists.tipo.value
-    };
     
     return jsonify({
         "mensagem": "Usuário autenticado.",
-        "conteudo": { "token": jwtToken, "usuario": userFormated }
+        "conteudo": { "token": jwtToken, "usuario": userExists.to_dict() }
     }), 200
     

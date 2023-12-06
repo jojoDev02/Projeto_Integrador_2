@@ -9,7 +9,8 @@ from controllers import (
     roteiro_viagem_controller,
     avaliacao_controller,
     comunidade_controller,
-    evento_controller
+    evento_controller,
+    publicacao_controller
 );
 from flask_cors import CORS;
 
@@ -25,5 +26,6 @@ app.register_blueprint(roteiro_viagem_controller.bp);
 app.register_blueprint(avaliacao_controller.bp)
 app.register_blueprint(comunidade_controller.bp);
 app.register_blueprint(evento_controller.bp);
+app.register_blueprint(publicacao_controller.bp);
 
 init_db();

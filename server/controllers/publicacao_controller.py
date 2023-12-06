@@ -14,10 +14,10 @@ def get_all():
     else:
         return [], 204
 
-@bp.route("/<int:id>", methods=["GET"])
-def get(publicacao_id):
+@bp.route("/<int:publicacaoId>", methods=["GET"])
+def get(publicacaoId):
 
-    resultado = publicacao_repository.fetch_by_id(publicacao_id)
+    resultado = publicacao_repository.fetch_by_id(publicacaoId)
     if resultado:
         return resultado.to_dict(), 200
     else:
@@ -32,27 +32,27 @@ def create():
     except Exception as e:
         return {"error" : "{}".format(e.args)}, 500
     
-@bp.route("/<int:id>/curtir", methods=["POST"])
-def like(publicação_id):
+@bp.route("/<int:publicacaoId>/curtir", methods=["POST"])
+def like(publicacaoId):
     try:
-        publicacao_repository.add_like(publicação_id)
-        return 200
+        publicacao_repository.add_like(publicacaoId)
+        return {"mensagem": "Publicaçao curtida", "conteudo": {}}, 200
     except Exception as e:
         return {"error": "{}".format(e.args)}, 500
 
-@bp.route("/<int:id>", methods=["PUT"])
-def update(publicacao_id):
+@bp.route("/<int:publicacaoId>", methods=["PUT"])
+def update(publicacaoId):
     novo_conteudo = request.get_json()
 
     try:
-        publicacao_repository.update(publicacao_id, novo_conteudo)
+        publicacao_repository.update(publicacaoId, novo_conteudo)
     except Exception as e:
         return {"error": "{}".format(e.args)}, 500
 
-@bp.route("/<int:id>", methods=["DELETE"])
-def delete(publicacao_id):
+@bp.route("/<int:publicacaoId>", methods=["DELETE"])
+def delete(publicacaoId):
     try:
-        publicacao_repository.delete(publicacao_id)
+        publicacao_repository.delete(publicacaoId)
         return {"messagem": "publicação removida com sucesso."}, 200
     except Exception as e:
         return e.args, 500

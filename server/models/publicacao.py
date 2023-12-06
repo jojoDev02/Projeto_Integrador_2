@@ -18,14 +18,14 @@ class Publicacao(Base):
     usuario: Mapped["Usuario"] = relationship(back_populates="publicacoes")
     
 
-    def __init__(self, conteudo, usuario_id) -> None:
+    def __init__(self, conteudo, usuarioId) -> None:
         self.conteudo = conteudo
         self.curtidas = 0
-        self.usuarioId = usuario_id
+        self.usuarioId = usuarioId
 
     def to_dict(self):
         return {
-            'id': self.publicacaoId,
+            'publicacaoId': self.publicacaoId,
             'conteudo': self.conteudo,
             'curtidas': self.curtidas,
             'comentarios': [comentario.to_dict() for comentario in self.comentarios] if self.comentarios else []

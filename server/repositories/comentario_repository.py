@@ -7,9 +7,9 @@ class ComentarioRepository:
 
     def create(self, data): 
         texto = data["texto"]
-        publicacao_id = data["publicacao_id"]
+        publicacaoId = data["publicacaoId"]
 
-        comentario =  Comentario(texto, publicacao_id)
+        comentario =  Comentario(texto, publicacaoId)
 
         db_session.add(comentario)
         db_session.commit()

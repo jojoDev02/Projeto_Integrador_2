@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import Evento from "../src/components/Evento";
 import { httpPy } from "../src/api";
 import AuthContext from "../src/contexts/auth_context";
 
@@ -9,7 +9,6 @@ export default function Eventos() {
   const { isAuth, usuarioAuth } = useContext(AuthContext);
   const router = useRouter();
   const [eventos, seteventos] = useState([]);
-  const { register, handleSubmit } = useForm(); 
 
   const fetchEventos = async () => {
 

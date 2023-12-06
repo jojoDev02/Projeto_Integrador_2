@@ -14,7 +14,7 @@ class Evento_Usuario(Base):
     usuarioId: Mapped[int] = mapped_column(ForeignKey("Usuario.usuarioId"), primary_key=True); 
     cargo = Column(Enum(Cargo), nullable=False);
     
-    evento: Mapped["Evento"] = relationship(back_populates="usuarios", cascade="all, delete")
+    evento: Mapped["Evento"] = relationship(back_populates="usuarios")
     usuario: Mapped["Usuario"] = relationship(back_populates="eventos");
     
     def __init__(self, cargo):

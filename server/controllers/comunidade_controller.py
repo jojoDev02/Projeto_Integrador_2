@@ -100,7 +100,7 @@ def destroy_usuario(comunidadeId, usuarioId):
        "conteudo": {} 
     }), 400;
     
-    usuario.comunidades.remove(associacao);
+    comunidade.usuarios.remove(associacao);
     
     db_session.delete(associacao);
     db_session.commit();

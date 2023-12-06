@@ -21,8 +21,6 @@ export default function Evento() {
         await httpPy.post("/eventos", payload);
         await fetchPosts();
       }
-    
-      if (!isAuth()) return "Você está sendo redirecionado para a página de login...";
 
     return (
         <>

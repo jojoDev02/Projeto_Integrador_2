@@ -1,44 +1,27 @@
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { httpPy } from "../src/api";
+import Publicacao from "../src/components/Publicacao";
 import AuthContext from "../src/contexts/auth_context";
 
 export default function Home() {
 
-    const { setUsuarioAuth } = useContext(AuthContext);
-    const router = useRouter();
-    const [publicacoes, setpublicacoes] = useState({});
+  const { isAuth } = useContext(AuthContext);
+  const router = useRouter();
+  const [publicacoes, setpublicacoes] = useState([]);
 
-    const authenticateUser = async (userData) => {
-      const res = await httpPy.post("/authenticate", userData );
-      console.log(res);
+  useEffect(() => {
+    const fetchPosts = async () => {
 
-      const { data, statusCode } = res;
+      if (!isAuth()) return router.push("/autenticacao");
 
-      if (statusCode != 200) throw Error(res);
-         
-
-      const { usuario, token } = data.conteudo;
-
-      setUsuarioAuth({ ...usuario, token });
+      const res = await httpPy.get(`/publicacoes`);
+      const { data } = res;      
+      setpublicacoes(data);
     }
 
-    useEffect(() => {
-      const fetchPosts = async () => {
-
-          if (usuarioAuth.id == undefined) return;
-  
-          const res = await httpPy.get(`/publicacoes/${publicacao.id}`);
-
-          const { conteudo } = res.data;
-  
-          console.log(conteudo);
-
-          setAmigos(conteudo);
-         
-      }
-
-      fetchPosts();
-    }, []);
+    fetchPosts();
+  }, []);
 
   return (
     <>
@@ -46,12 +29,16 @@ export default function Home() {
             <div style={{ display: "flex" }}>
                 <section>
                     <h2>Feed</h2>
+                    <div>
+                      <p>Publicar</p>
+                      <form>
+
+                      </form>
+                    </div>
                     {
-                       publicacao?.map(({ id, publicacaoId }) => {
+                       publicacoes?.map(publicacao => {
                             return (
-                                <ul key={ id }>
-                                    <li id={ publicacaoId } style={{ background: "purple" }}> { conteudo }</li>
-                                </ul>
+                              <Publicacao publicacao={ publicacao } />
                             )
                         })
                     }

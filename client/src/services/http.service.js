@@ -24,7 +24,7 @@ class HttpService {
             headers: { ...this.headers, ...headers } 
         });
 
-        return await this._handleResponse(res);
+        return (await this._handleResponse(res));
     }
 
 
@@ -48,8 +48,12 @@ class HttpService {
     }
 
     _handleResponse = async (res) => {
+        console.log(res);
+
         const statusCode = res.status;
-        const data = await res.json();
+        let data = {};
+
+        if (statusCode != 204) data = (await res.json());
 
         return { data, statusCode };
     }

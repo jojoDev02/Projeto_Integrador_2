@@ -13,12 +13,13 @@ class Comentario(Base):
     publicacaoId: Mapped[int] = mapped_column(ForeignKey("Publicacao.publicacaoId"))
     publicacao: Mapped["Publicacao"] = relationship(back_populates="comentarios")
 
-    def __init__(self, texto, publicacao_id) -> None:
+    def __init__(self, texto, publicacaoId) -> None:
         self.texto = texto
-        self.publicacao_id = publicacao_id
+        self.publicacaoId = publicacaoId
 
     def to_dict(self):
         return{
-            "id" : self.comentarioId,
-            "texto" : self.texto
+            "comentarioId" : self.comentarioId,
+            "texto" : self.texto,
+            "publicacaoId": self.publicacaoId
         }

@@ -1,5 +1,9 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify;
 from repositories.publicacao_repository import PublicacaoRepository
+from repositories.comentario_repository import ComentarioRepository;
+from middlewares.validacao import body;
+from services.empty import Empty;
+from services.string import String;
 
 bp = Blueprint("publicao", __name__, url_prefix="/api/v1/publicacoes")
 
@@ -57,3 +61,30 @@ def delete(publicacaoId):
     except Exception as e:
         return e.args, 500
 
+@bp.route("/<int:publicacaoId>/comentarios", methods=["POST"])
+@body("texto", [Empty(), String()])
+def store_comentario(publicacaoId):
+    publicacao_repository = PublicacaoRepository();
+    publicacao = publicacao_repository.fetch_by_id(publicacaoId);
+    
+    if publicacao == None: return jsonify({
+        "mensagem": "Publicação não encontrada.",
+        "conteudo": {}
+    }), 404;
+    
+    body = request.get_json();
+    
+    dados = {
+        "publicacaoId": publicacaoId,
+        "texto": body["texto"]
+    };
+    
+    comentario_repository = ComentarioRepository();
+    comentario =  comentario_repository.create(dados);
+    
+    return jsonify({
+        "mensagem": "Comentário criado.",
+        "conteudo": comentario.to_dict()
+    }), 201;
+    
+    

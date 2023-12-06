@@ -1,9 +1,15 @@
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { httpPy } from "../../api";
 
 export default function Publicacao({ publicacao }) {
     
     const [curtidas, setCurtidas] = useState(publicacao.curtidas);
+
+    useEffect(() => {
+        console.log("estou no componente de publicacao");
+        console.log(publicacao);
+    }, [])
 
     const curtirPublicacao = async (event) => {
         const id = event.target.id;
@@ -12,10 +18,14 @@ export default function Publicacao({ publicacao }) {
     }
 
     return (
-        <div key={ publicacao.publicacaoId } style={{ marginBottom: "3rem" }}>
-            <p> { publicacao.conteudo }</p>
-            <span>{ curtidas }</span>
-            <button id={ publicacao.publicacaoId } onClick={ curtirPublicacao }>Curtir</button>
-        </div>
+        <>
+            <Link key={ publicacao.publicacaoId } style={{ marginBottom: "3rem" }} href={ `/publicacao/${publicacao.publicacaoId}` }>
+                <p> { publicacao.conteudo }</p>
+            </Link>
+            <div>
+                <span>{ curtidas }</span>
+                <button id={ publicacao.publicacaoId } onClick={ curtirPublicacao }>Curtir</button>
+            </div>
+        </>
     )
 }

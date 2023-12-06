@@ -5,11 +5,8 @@ bp = Blueprint("pesquisa", __name__, url_prefix="/api/v1/pesquisar");
 
 @bp.route("", methods=["GET"])
 def pesquisar():
-    
     p = request.args.get("p");
     
-    print(p);
-
     usuarios = [];
 
     if (p.strip() != ""):
@@ -26,9 +23,6 @@ def pesquisar():
             }
             for usuario in usuarios
         ];  
-    
-    print(usuarios);
-
     
     return jsonify({
             "mensagem": "Pesquisa realizada",

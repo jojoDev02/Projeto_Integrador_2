@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 const AuthContext = createContext({ 
     usuarioAuth: { 
-        id: -1, 
+        usuarioId: -1, 
         email: "", 
         apelido: "", 
         nome: "", 

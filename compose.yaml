@@ -4,18 +4,18 @@ services:
     build: ./server
     ports:
       - "5000:5000"
- 
     depends_on: 
       - database
+      
   chat:
     container_name: chat_pi2
     build: ./chat
     ports:
       - "8080:8080"
- 
     depends_on: 
       - database
       - cache
+
   database:
     container_name: bd_pi2
     image: "mysql:8"
@@ -30,10 +30,10 @@ services:
     build: ./client
     ports:
       - "3000:3000"
-    
     depends_on: 
       - chat
       - rest_api
+
   cache:
     container_name: memcached_pi2
     image: "memcached:1.6.22"

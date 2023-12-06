@@ -44,13 +44,6 @@ CREATE TABLE Publicacao (
     curtidas INT NOT NULL
 );
 
--- Tabela Comunidade_Publicacao
-CREATE TABLE Comunidade_Publicacao (
-	publicacaoId INT,
-    comunidadeId INT,
-    PRIMARY KEY (publicacaoId, comunidadeId)
-);
-
 -- Tabela Evento
 CREATE TABLE Evento (
     eventoId INT AUTO_INCREMENT PRIMARY KEY,
@@ -107,7 +100,7 @@ CREATE TABLE Amizade (
     amizadeId INT AUTO_INCREMENT,
     solicitanteId INT,
     receptorId INT,
-    status ENUM("pendente", "confirmada"),
+    status ENUM('pendente', 'confirmada'),
     PRIMARY KEY (amizadeId, solicitanteId, receptorId)
 );
 
@@ -136,14 +129,6 @@ FOREIGN KEY (usuarioId) REFERENCES Usuario(usuarioId);
 ALTER TABLE Publicacao
 ADD comunidadeId INT,
 ADD CONSTRAINT fk_comunidade_pertencente
-FOREIGN KEY (comunidadeId) REFERENCES Comunidade(comunidadeId);
-
-ALTER TABLE Comunidade_Publicacao
-ADD CONSTRAINT fk_publicacao
-FOREIGN KEY (publicacaoId) REFERENCES Publicacao(publicacaoId);
-
-ALTER TABLE Comunidade_Publicacao
-ADD CONSTRAINT fk_comunidade
 FOREIGN KEY (comunidadeId) REFERENCES Comunidade(comunidadeId);
 
 ALTER TABLE Comunidade_Usuario
@@ -199,3 +184,14 @@ ALTER TABLE Avaliacao
 ADD usuarioId INT,
 ADD CONSTRAINT fk_usuario_avaliacao
 FOREIGN KEY (usuarioId) REFERENCES Usuario(usuarioId);
+
+ALTER TABLE Usuario
+ADD CONSTRAINT unique_email
+UNIQUE (email);
+
+ALTER TABLE Usuario
+ADD CONSTRAINT unique_apelido
+UNIQUE (apelido);
+
+ALTER TABLE Evento_Usuario
+ADD cargo ENUM('dono', 'participante') NOT NULL;

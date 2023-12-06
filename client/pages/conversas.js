@@ -21,11 +21,11 @@ export default function Conversas() {
 
         if (!router.isReady) return;
 
-        console.log(usuarioAuth.id);
+        console.log(usuarioAuth.usuarioId);
 
-        if (usuarioAuth.id == undefined) return;
+        if (usuarioAuth.usuarioId == undefined) return;
 
-        const client = new WebsocketService(`ws://localhost:8080/${usuarioAuth.id}`);      
+        const client = new WebsocketService(`ws://localhost:8080/${usuarioAuth.usuarioId}`);      
 
         setWebsocket(client);
         
@@ -54,7 +54,7 @@ export default function Conversas() {
             
             if (!message || !senderId) return;
 
-            if (senderId != usuarioAuth.id) {
+            if (senderId != usuarioAuth.usuarioId) {
                 setNotificacoes(prev => { return { ...prev, [senderId]: message } });
 
                 if (senderId != receiver) return;
@@ -71,9 +71,9 @@ export default function Conversas() {
     useEffect(() => {
         const fetchAmigos = async () => {
 
-            if (usuarioAuth.id == undefined) return;
+            if (usuarioAuth.usuarioId == undefined) return;
     
-            const res = await httpPy.get(`/usuarios/${usuarioAuth.id}/amizades`);
+            const res = await httpPy.get(`/usuarios/${usuarioAuth.usuarioId}/amizades`);
             
             console.log(res);
 
@@ -94,7 +94,7 @@ export default function Conversas() {
         event.preventDefault();
     
         if (websocket != null) {
-            const data = { action: "SEND", content: { senderId: usuarioAuth.id, receiverId: receiver, message: text } };
+            const data = { action: "SEND", content: { senderId: usuarioAuth.usuarioId, receiverId: receiver, message: text } };
             websocket.send(data);
         }
         
@@ -121,7 +121,7 @@ export default function Conversas() {
 
         const data = {
             action: "JOIN",
-            content: { senderId: usuarioAuth.id, receiverId }
+            content: { senderId: usuarioAuth.usuarioId, receiverId }
         };
 
         websocket.send(data);
@@ -154,7 +154,7 @@ export default function Conversas() {
                                         conversation?.map(el => {
                                             let background = "green";
 
-                                            if (el.senderId == usuarioAuth.id) background = "red"; 
+                                            if (el.senderId == usuarioAuth.usuarioId) background = "red"; 
                                             
                                             return <div style={{ background }}>{ el.message }</div>
                                         })

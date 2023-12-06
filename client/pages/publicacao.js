@@ -27,7 +27,7 @@ export default function publicacao() {
     };
 
     const registerPublicacao = async (publicacaoData) => {
-        const res = await httpPy.post("/register", publicacaoData);
+        const res = await httpPy.post(`/publicacoes/${id}`, publicacaoData);
         console.log(res);
 
         const { data, statusCode } = res;

@@ -1,62 +1,67 @@
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { httpPy } from "../src/api";
+import Publicacao from "../src/components/Publicacao";
 import AuthContext from "../src/contexts/auth_context";
 
 export default function Home() {
 
-    const { setUsuarioAuth } = useContext(AuthContext);
-    const router = useRouter();
-    const [publicacoes, setpublicacoes] = useState({});
+  const { isAuth, usuarioAuth } = useContext(AuthContext);
+  const router = useRouter();
+  const [publicacoes, setpublicacoes] = useState([]);
+  const { register, handleSubmit } = useForm(); 
 
-    const authenticateUser = async (userData) => {
-      const res = await httpPy.post("/authenticate", userData );
-      console.log(res);
+  const fetchPosts = async () => {
 
-      const { data, statusCode } = res;
+    if (!isAuth()) return router.push("/autenticacao");
 
-      if (statusCode != 200) throw Error(res);
-         
+    const res = await httpPy.get(`/publicacoes`);
+    const { data } = res;      
+    setpublicacoes(data);
+  }
 
-      const { usuario, token } = data.conteudo;
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
-      setUsuarioAuth({ ...usuario, token });
-    }
+  const publicar = async (data) => {
+    const { conteudo } = data;
 
-    useEffect(() => {
-      const fetchPosts = async () => {
+    console.log(data);
+    console.log(usuarioAuth);
 
-          if (usuarioAuth.id == undefined) return;
-  
-          const res = await httpPy.get(`/publicacoes/${publicacao.id}`);
+    const payload = { conteudo, usuarioId: usuarioAuth.usuarioId }
+    console.log(payload);
 
-          const { conteudo } = res.data;
-  
-          console.log(conteudo);
+    await httpPy.post("/publicacoes", payload);
+    await fetchPosts();
+  }
 
-          setAmigos(conteudo);
-         
-      }
-
-      fetchPosts();
-    }, []);
+  if (!isAuth()) return "Você está sendo redirecionado para a página de login...";
 
   return (
     <>
     <h1>Home</h1>
-            <div style={{ display: "flex" }}>
-                <section>
-                    <h2>Feed</h2>
-                    {
-                       publicacao?.map(({ id, publicacaoId }) => {
-                            return (
-                                <ul key={ id }>
-                                    <li id={ publicacaoId } style={{ background: "purple" }}> { conteudo }</li>
-                                </ul>
-                            )
-                        })
-                    }
-                </section>
-              </div>
+    <div style={{ display: "flex" }}>
+        <section>
+            <h2>Feed</h2>
+            <div>
+              <p>Realizar publicação</p>
+              <form onSubmit={ handleSubmit(publicar) }>
+                <textarea type="text" { ...register("conteudo", { required: true, maxLength: 255 }) }/>
+                <button type="submit">publicar</button>
+              </form>
+            </div>
+            {
+              publicacoes?.map(publicacao => {
+                return (
+                  <Publicacao publicacao={ publicacao } />
+                )
+              })
+            }
+        </section>
+      </div>
     </>
   )
 }

@@ -4,13 +4,15 @@ import bcrypt;
 from jwt import JWT, jwk_from_dict;
 from jwt.utils import get_int_from_datetime;
 from datetime import datetime, timedelta, timezone;
-from middlewares.validacao import empty
+from middlewares.validacao import body;
+from services.empty import Empty
+from services.string import String
 
 bp = Blueprint("auth", __name__, url_prefix="/api/v1/authenticate");
 
 @bp.route("", methods=["POST"])
-@empty("email")
-@empty("senha")
+@body("email", [Empty(), String()])
+@body("senha", [Empty(), String()])
 def authenticate():
     body = request.get_json();
     
@@ -36,15 +38,9 @@ def authenticate():
     key = jwk_from_dict({"kty": "oct", "k": "GawgguFyGrWKav7AX4VKUg"});
     jwtToken = jwtInstance.encode(message, key, alg="HS256");
     
-    userFormated = {
-        "id": userExists.usuarioId, 
-        "email": userExists.email, 
-        "apelido": userExists.apelido,
-        "tipo": userExists.tipo.value
-    };
     
     return jsonify({
         "mensagem": "Usuário autenticado.",
-        "conteudo": { "token": jwtToken, "usuario": userFormated }
+        "conteudo": { "token": jwtToken, "usuario": userExists.to_dict() }
     }), 200
     

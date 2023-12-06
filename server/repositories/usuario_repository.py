@@ -8,6 +8,9 @@ class Usuario_Repository:
     def fetch_by_email(self, email):
         return db_session.query(Usuario).filter(Usuario.email == email).first();
     
+    def fetch_by_apelido(self, apelido):
+        return db_session.query(Usuario).filter(Usuario.apelido == apelido).first();
+    
     def fetch_by_id(self, id):
         return db_session.query(Usuario).filter(Usuario.usuarioId == id).first();
     
@@ -41,4 +44,5 @@ class Usuario_Repository:
         db_session.commit();
         
         return usuario;
+
 

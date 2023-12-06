@@ -32,6 +32,19 @@ def show(eventoId, evento):
     }), 200;
     
 
+@bp.route("/<int:eventoId>/usuarios", methods=["GET"])
+@evento_existe
+def list_usuarios(eventoId, evento):
+    evento_usuarios = evento.usuarios;
+    
+    usuarios = [evento_usuario.usuario for evento_usuario in evento_usuarios];
+    usuarios = [usuario.to_dict() for usuario in usuarios];
+    
+    return jsonify({
+        "mensagem": "Usuários do evento listados",
+        "conteudo": usuarios
+    }), 200;
+
 @bp.route("/<int:eventoId>/usuarios/<int:usuarioId>", methods=["PUT"])
 @evento_existe
 @usuario_existe
@@ -39,7 +52,7 @@ def update_usuario(eventoId, usuarioId, evento, usuario):
     evento_usuario = Evento_Usuario("participante");
     
     evento_usuario.evento = evento;
-    usuario.eventos.append(evento_usuario)
+    usuario.eventos.append(evento_usuario);
     
     db_session.add(evento_usuario);
     db_session.commit();
@@ -50,4 +63,28 @@ def update_usuario(eventoId, usuarioId, evento, usuario):
             "evento": evento.to_dict(),
             "usuario": usuario.to_dict()
         }
-    })
+    }), 200;
+    
+@bp.route("/<int:eventoId>/usuarios/<int:usuarioId>", methods=["DELETE"])
+@evento_existe
+@usuario_existe
+def destroy_usuario(eventoId, usuarioId, evento, usuario):
+    evento_usuario = db_session.query(Evento_Usuario).filter(
+        Evento_Usuario.usuarioId == usuarioId,
+        Evento_Usuario.eventoId == eventoId
+    ).first();
+    
+    if evento_usuario.cargo.value == 1: return jsonify({
+        "mensagem": "Dono do evento não pode ser removido.",
+        "conteudo": {}
+    }), 400;
+    
+    evento.usuarios.remove(evento_usuario);
+    
+    db_session.delete(evento_usuario);
+    db_session.commit();
+    
+    return jsonify({
+        "mensagem": "Usuário removido.",
+        "conteudo": {}
+    }), 204;

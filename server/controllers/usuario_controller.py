@@ -18,18 +18,54 @@ bp = Blueprint("usuario", __name__, url_prefix="/api/v1/usuarios");
 @usuario_existe
 def show(usuarioId, usuario):
     usuario_repository = Usuario_Repository();
-    usuario = usuario_repository.fetch_by_id(id);
-    
-    usuario = {
-        "id": usuario.usuarioId,
-        "nome": usuario.nome,
-        "apelido": usuario.apelido,
-        "email": usuario.email
-    };
+    usuario = usuario_repository.fetch_by_id(usuarioId);
     
     return jsonify({
-        "mensagem": "Informações do usuário listadas.",
-        "conteudo": usuario
+        "mensagem": "Usuário exibido.",
+        "conteudo": usuario.to_dict()
+    }), 200;
+
+@bp.route("/<int:usuarioId>", methods=["PUT"])
+@usuario_existe
+@body("nome", [Empty(), String()])
+@body("email", [Empty(), String()])
+@body("apelido", [Empty(), String()])
+@body("tipo", [Empty(), String()])
+def update(usuarioId, usuario):
+    body = request.get_json();    
+
+    usuario_repository = Usuario_Repository();
+
+    email_em_uso = False;
+    apelido_em_uso = False;
+ 
+    if body["email"] != usuario.email:
+        email_em_uso = True if usuario_repository.fetch_by_email(body["email"]) else False;
+    
+    if email_em_uso: return jsonify({
+        "mensagem": "E-mail já cadastrado.",
+        "conteudo": {}
+    }), 400;
+
+    if body["apelido"] != usuario.apelido:
+        apelido_em_uso = True if usuario_repository.fetch_by_apelido(body["apelido"]) else False;
+    
+    if apelido_em_uso: return jsonify({
+        "mensagem": "Apelido já cadastrado.",
+        "conteudo": {}
+    }), 400;
+
+    usuario.nome = body["nome"];
+    usuario.email = body["email"];
+    usuario.apelido = body["apelido"];
+    usuario.tipo = body["tipo"];
+    
+    db_session.add(usuario);
+    db_session.commit();
+    
+    return jsonify({
+        "mensagem": "Usuário atualizado.",
+        "conteudo": usuario.to_dict()
     }), 200;
 
 @bp.route("/<int:usuarioId>/amizades", methods=["GET"])

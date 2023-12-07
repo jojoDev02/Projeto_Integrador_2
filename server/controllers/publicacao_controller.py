@@ -76,7 +76,8 @@ def store_comentario(publicacaoId):
     
     dados = {
         "publicacaoId": publicacaoId,
-        "texto": body["texto"]
+        "texto": body["texto"],
+        "usuarioId": body["usuarioId"]
     };
     
     comentario_repository = ComentarioRepository();

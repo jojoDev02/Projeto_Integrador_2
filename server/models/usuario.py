@@ -23,6 +23,7 @@ class Usuario(Base):
     avaliacoes: Mapped[List["Avaliacao"]] = relationship(back_populates="usuario");
     eventos: Mapped[List["Evento_Usuario"]] = relationship(back_populates="usuario");
     comunidades: Mapped[List["Comunidade_Usuario"]] = relationship(back_populates="usuario");
+    comentarios: Mapped[List["Comentario"]] = relationship(back_populates="usuario");
     amizades_solicitadas: Mapped[List["Amizade"]] = relationship(
         "Amizade", 
         cascade="all, delete", 

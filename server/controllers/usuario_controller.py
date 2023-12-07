@@ -223,7 +223,7 @@ def store_evento(usuarioId, usuario):
     return jsonify({
         "mensagem": "Evento criado.",
         "conteudo": evento.to_dict() 
-    });
+    }), 201;
 
 @bp.route("/<int:usuarioId>/eventos/<int:eventoId>", methods=["DELETE"])
 @usuario_existe

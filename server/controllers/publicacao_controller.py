@@ -9,6 +9,8 @@ bp = Blueprint("publicao", __name__, url_prefix="/api/v1/publicacoes")
 
 publicacao_repository = PublicacaoRepository()
 
+comentario_repository = ComentarioRepository()
+
 @bp.route("", methods=["GET"])
 def get_all():
     resultado = publicacao_repository.get_all()
@@ -30,7 +32,7 @@ def create():
     dados = request.get_json()
     try:
         publicacao_repository.create(dados)
-        return {"messagem": "Publicação criada com sucesso."}, 200
+        return {"messagem": "Publicação criada com sucesso."}, 201
     except Exception as e:
         return {"error" : "{}".format(e.args)}, 500
     

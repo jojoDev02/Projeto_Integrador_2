@@ -37,7 +37,7 @@ export default function Evento() {
                     <label>Data</label>
                     <input type="date" name="data_evento" { ...register("data_evento", { required: true }) }/>
                 </div>
-                <button type="submit">publicar</button>
+                <button type="submit">Criar</button>
             </form>
          </div>
         </>

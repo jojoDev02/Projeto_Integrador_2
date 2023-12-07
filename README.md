@@ -101,3 +101,36 @@ Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**
 ## Gráfico de concorrência da funcionalidade Registrar Usuário ##
 
 ![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/user_concorrencia.png?raw=true)
+
+# Registrar usuário - Serviço 02 - Carga de Testes 02 
+
+* Tipos de operação: inserção
+* https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/repositories/usuario_repository.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/models/usuario.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/controllers/registration_controller.py
+* Data de medição: 30/11/2023
+* Para o projeto funcionar, é necessário subir o banco de dados e o server em container
+* Otimização: nos testes anteriores, estávamos testando apenas com 1 usuário. Agora melhoramos a dashboard com requisições mais variadas, aumentamos para 5 usuários diferentes.
+* Os testes de carga foram feitos com o grafana/K6, onde foram gerados dashboards com os dados obtidos, além da criação de gráficos da latência, vazão e concorrência a partir de um arquivo .csv. As imagens abaixo são referentes aos testes:
+
+
+## Dashboard 01 da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_02_dash_user_01.png?raw=true)
+
+
+## Dashboard 02 da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_02_dash_user_02.png?raw=true)
+
+
+## Gráfico de latência da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_02_latencia_user.png?raw=true)
+
+
+## Gráfico de vazão da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_02_vazao_user.png?raw=true)
+
+
+## Gráfico de concorrência da funcionalidade Registrar Usuário ##
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_02_concorrencia_user.png?raw=true)

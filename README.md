@@ -1,4 +1,4 @@
-# Projeto_Integrador_2
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/assets/115050272/409b67c0-b32b-4ef2-beae-851c83fef0ec)![image](https://github.com/jojoDev02/Projeto_Integrador_2/assets/115050272/6b5e8e87-8207-4c6a-adc5-e658ca34f113)![image](https://github.com/jojoDev02/Projeto_Integrador_2/assets/115050272/e979dbc9-6190-466d-9d63-d755859a69a4)![image](https://github.com/jojoDev02/Projeto_Integrador_2/assets/115050272/bab7f2ef-4022-4a1b-ab0e-634e890c2f0e)# Projeto_Integrador_2
 
 ## Banco de Dados
 
@@ -134,3 +134,37 @@ Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**
 
 ## Gráfico de concorrência da funcionalidade Registrar Usuário ##
 ![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_02_concorrencia_user.png?raw=true)
+
+
+# Registrar usuário - Serviço 02 - Carga de Testes 03
+
+* Tipos de operação: inserção
+* https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/repositories/usuario_repository.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/models/usuario.py, https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/server/controllers/registration_controller.py
+* Data de medição: 07/12/2023
+* Para o projeto funcionar, é necessário subir o banco de dados e o server em container
+* Otimização: conseguimos estabilizar a latência dos testes e continuar mantendo a constância da concorrência. Reparando nos dois gráficos anteriores, podemos ver uma latência não tão boa quanto a do teste 03.
+* Os testes de carga foram feitos com o grafana/K6, onde foram gerados dashboards com os dados obtidos, além da criação de gráficos da latência, vazão e concorrência a partir de um arquivo .csv. As imagens abaixo são referentes aos testes:
+
+
+## Dashboard 01 da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_03_dash_user_01.png?raw=true)
+
+
+## Dashboard 02 da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_03_dash_user_02.png?raw=true)
+
+
+## Gráfico de latência da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_03_latencia_user.png?raw=true)
+
+
+## Gráfico de vazão da funcionalidade Registrar Usuário ##
+
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_03_vazao_user.png?raw=true)
+
+
+## Gráfico de concorrência da funcionalidade Registrar Usuário ##
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_03_concorrencia_user.png?raw=true)

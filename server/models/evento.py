@@ -26,11 +26,15 @@ class Evento(Base):
         
     def to_dict(self):
         horario = str(self.horario);
+
+        usuarios = [usuario for usuario in self.usuarios if usuario.cargo.value == 1];
+        dono = usuarios[0].usuario.to_dict();
         
         return {
             "eventoId": self.eventoId,
             "titulo": self.titulo,
             "descricao": self.descricao,
             "horario": horario,
-            "data_evento": self.data_evento
+            "data_evento": self.data_evento,
+            "dono": dono
         };

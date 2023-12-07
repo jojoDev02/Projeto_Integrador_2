@@ -11,7 +11,7 @@ from database import db_session;
 
 bp = Blueprint("evento", __name__, url_prefix="/api/v1/eventos");
 
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 def list():
     evento_repository = Evento_Repository();
     eventos = evento_repository.fetch_all();
@@ -30,7 +30,25 @@ def show(eventoId, evento):
         "mensagem": "Evento encontrado.",
         "conteudo": evento.to_dict()
     }), 200;
+
+@bp.route("/<int:eventoId>/usuarios/<int:usuarioId>", methods=["GET"])
+@evento_existe
+@usuario_existe
+def show_usuario(eventoId, usuarioId, evento, usuario):
+    evento_usuarios = evento.usuarios;
+    usuarios = [usuario for usuario in evento_usuarios if usuario.usuarioId == usuarioId];
     
+    if not usuarios: return jsonify({
+        "mensagem": "Usuário do evento não encontrado.",
+        "conteudo": {}
+    }), 404;
+    
+    usuario = usuarios[0].usuario.to_dict();
+    
+    return jsonify({
+        "mensagem": "Usuário do evento exibido.",
+        "conteudo": usuario
+    }), 200;
 
 @bp.route("/<int:eventoId>/usuarios", methods=["GET"])
 @evento_existe

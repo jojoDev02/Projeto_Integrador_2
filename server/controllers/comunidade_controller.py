@@ -5,13 +5,13 @@ from repositories.usuario_repository import Usuario_Repository;
 from models.comunidade_usuario import Comunidade_Usuario;
 from middlewares.validacao import body;
 from services.empty import Empty;
-from services.string import String;
+from services.integer import Integer;
 from database import db_session;
 
 
 bp = Blueprint("comunidade", __name__, url_prefix="/api/v1/comunidades");
 
-@bp.route("/", methods=["GET"])
+@bp.route("", methods=["GET"])
 def list():
     comunidade_repository = Comunidade_Repository();
     comunidades = comunidade_repository.fetch_all();
@@ -37,6 +37,24 @@ def show(id):
         "mensagem": "Comunidade exibida.",
         "conteudo": comunidade.to_dict()
     }), 200;
+
+@bp.route("<int:comunidadeId>/publicacoes", methods=["GET"])
+def list_publicacoes(comunidadeId):
+    comunidade_repository = Comunidade_Repository();
+    comunidade = comunidade_repository.fetch_by_id(comunidadeId);
+    
+    if comunidade == None: return jsonify({
+        "mensagem": "Comunidade não encontrada.",
+        "conteudo": {}
+    }), 404;
+    
+    publicacoes = comunidade.publicacoes;
+    publicacoes = [publicacao.to_dict() for publicacao in publicacoes];
+    
+    return jsonify({
+        "mensagem": "Publicações da comunidade listadas.",
+        "conteudo": publicacoes
+    })
 
 @bp.route("/<int:comunidadeId>/usuarios/<int:usuarioId>", methods=["PUT"])
 def update_usuario(comunidadeId, usuarioId):

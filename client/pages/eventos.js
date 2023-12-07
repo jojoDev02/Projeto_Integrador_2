@@ -1,34 +1,36 @@
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import Evento from "../src/components/Evento";
 import { httpPy } from "../src/api";
+import Evento from "../src/components/Evento";
 import AuthContext from "../src/contexts/auth_context";
 
 export default function Eventos() {
 
   const { isAuth, usuarioAuth } = useContext(AuthContext);
   const router = useRouter();
-  const [eventos, seteventos] = useState([]);
+  const [eventos, setEventos] = useState([]);
 
   const fetchEventos = async () => {
-
-    if (!isAuth()) return router.push("/autenticacao");
-
     const res = await httpPy.get(`/eventos`);
-    const { data } = res;      
-    seteventos(data);
+    const { conteudo } = res.data;      
+    setEventos(conteudo);
   }
 
   useEffect(() => {
+    if (!isAuth()) {router.push("/autenticacao"); return;}
+
     fetchEventos();
   }, []);
+
+  if (!isAuth()) return;
 
   return (
     <>
     <h1>Home</h1>
     <div style={{ display: "flex" }}>
         <section>
-            <h2>Seus eventos</h2>
+            <h2>Eventos</h2>
+            <button onClick={ () => router.push("/evento/criar") }>Crie seu evento</button>
             {
               eventos?.map(evento => {
                 return (

@@ -18,9 +18,8 @@ class WebsocketService {
     handleConnection = async (ws, request) => {
         const senderId = request.url.substring(1);
         
-        if (!senderId) {
-            return;
-        }
+        if (!senderId || senderId == undefined) return;
+        
 
         this.logger.info(`User ${senderId} connected.`);
         
@@ -51,7 +50,7 @@ class WebsocketService {
     }
 
     _fetchFriends = async (id) => {
-        let friends = await this.memcachedService.get(`user_${id}_friends`);
+        let friends = undefined //await this.memcachedService.get(`user_${id}_friends`);
 
 
         if (!friends) {

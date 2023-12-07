@@ -72,11 +72,6 @@ def update(usuarioId, usuario):
 @usuario_existe
 def list_amizades(usuarioId, usuario):
     
-    usuario_repository = Usuario_Repository();
-    usuario = usuario_repository.fetch_by_id(id);
-    
-    if (usuario == None): return jsonify("Usuário não encontrato."), 404;
-    
     amizades_solicitadas = usuario.amizades_solicitadas;
     amizades_recebidas = usuario.amizades_recebidas;
     amizades = amizades_recebidas + amizades_solicitadas;
@@ -84,8 +79,9 @@ def list_amizades(usuarioId, usuario):
     amizades = [
         {
             "id": amigo.amizadeId, 
-            "amigoId": amigo.solicitanteId if amigo.receptorId == id else amigo.receptorId,
-            "status": amigo.status.value
+            "amigoId": amigo.solicitanteId if amigo.receptorId == usuarioId else amigo.receptorId,
+            "status": amigo.status.value,
+            "apelido": amigo.solicitante.apelido if amigo.receptorId == usuarioId else amigo.receptor.apelido,
         }
         for amigo in amizades
     ];
@@ -127,9 +123,6 @@ def show_amizade(usuarioId, amigoId, usuario):
 def store_comunidade(usuarioId, usuario):
     body = request.get_json();
     
-    usuario_repository = Usuario_Repository()
-    usuario = usuario_repository.fetch_by_id(id);
-    
     comunidade_repository = Comunidade_Repository();
     comunidade = comunidade_repository.create(body);
     
@@ -147,6 +140,32 @@ def store_comunidade(usuarioId, usuario):
         "mensagem": "Comunidade criada.",
         "conteudo": comunidade.to_dict()
     }), 201;
+    
+@bp.route("/<int:usuarioId>/comunidades/<int:comunidadeId>")
+@usuario_existe
+def show_comunidade(usuarioId, comunidadeId, usuario):
+    
+    comunidades = usuario.comunidades;
+    
+    comunidade = [comunidade for comunidade in comunidades if comunidade.comunidadeId == comunidadeId];
+    
+    if not comunidade: return jsonify({
+        "mensagem": "Comunidade do usuário não encontrada.",
+        "conteudo": {}
+    }), 404;
+    
+    cargo = comunidade[0].cargo.value;
+    comunidade = comunidade[0].comunidade;
+    
+    comunidade = comunidade.to_dict();
+    comunidade["cargo"] = cargo;
+    
+    return jsonify({
+        "mensagem": "Comundade do usuário exibida.",
+        "conteudo": comunidade
+    }), 200;
+    
+    
 
 @bp.route("/<int:usuarioId>/comunidades/<int:comunidadeId>", methods=["DELETE"])
 @usuario_existe
@@ -204,7 +223,7 @@ def store_evento(usuarioId, usuario):
     return jsonify({
         "mensagem": "Evento criado.",
         "conteudo": evento.to_dict() 
-    });
+    }), 201;
 
 @bp.route("/<int:usuarioId>/eventos/<int:eventoId>", methods=["DELETE"])
 @usuario_existe

@@ -7,7 +7,7 @@ import AuthContext from "../../src/contexts/auth_context";
 
 export default function Publicacao() {
 
-    const { isAuth } = useContext(AuthContext);
+    const { isAuth, usuarioAuth } = useContext(AuthContext);
     const [publicacao, setPublicacao] = useState({
         publicacaoId: null,
         curtidas: null,
@@ -32,7 +32,8 @@ export default function Publicacao() {
 
         const payload = { 
             texto: data.texto,
-            publicacaoId: publicacao.publicacaoId 
+            publicacaoId: publicacao.publicacaoId,
+            usuarioId: usuarioAuth.usuarioId
         }
         console.log(payload);
         await httpPy.post(`/publicacoes/${publicacao.publicacaoId}/comentarios`, payload);

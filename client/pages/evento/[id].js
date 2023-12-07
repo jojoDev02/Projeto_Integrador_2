@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { httpPy } from "../../src/api";
 import AuthContext from "../../src/contexts/auth_context";
@@ -8,38 +8,83 @@ export default function Evento() {
     const { register, handleSubmit } = useForm();
     const { isAuth, usuarioAuth } = useContext(AuthContext);
     const router = useRouter();
+    const [evento, setEvento] = useState({
+        eventoId: null,
+        descricao: "",
+        data_evento: "",
+        titulo: "",
+        horario: ""
+    });
+    const [isParticipante, setIsParticipante] = useState(false);
 
-    const publicar = async (data) => {
-        const { conteudo } = data;
-    
-        console.log(data);
-        console.log(usuarioAuth);
-    
-        const payload = { conteudo, usuarioId: usuarioAuth.usuarioId }
-        console.log(payload);
-    
-        await httpPy.post("/eventos", payload);
-        await fetchPosts();
-      }
+    useEffect(() => {
+        console.log("2");
+        if (!isAuth()) {router.push("/autenticacao"); return;}
+
+        const { id } = router.query;
+        buscarEvento(id);
+        buscarEventoUsuario(id, usuarioAuth.usuarioId);
+    }, []);
+
+    const buscarEventoUsuario = async (eventoId, usuarioId) => {
+        const res = await httpPy.get(`/eventos/${eventoId}/usuarios/${usuarioId}`);
+
+        console.log(res);
+
+        setIsParticipante(res.statusCode == 200);
+        
+    }
+
+    const buscarEvento = async (id) => {
+        const res = await httpPy.get(`/eventos/${id}`);        
+        
+        console.log(res);
+
+        if (res.statusCode == 200) {
+            const { conteudo } = res.data;
+            setEvento(conteudo);
+        }
+    }
+
+    const participarEvento = async () => {
+        const res = await httpPy.put(`/eventos/${evento.eventoId}/usuarios/${usuarioAuth.usuarioId}`);
+        console.log(res);
+
+        if (res.statusCode == 200) {
+            isParticipante(true);
+        }
+    }
+
+    const sairEvento = () => async () => {
+        console.log("entrei")
+        const res = await httpPy.delete(`/eventos/${evento.eventoId}/usuarios/${usuarioAuth.usuarioId}`);
+        console.log(res);
+
+        if (res.statusCode == 204) {
+            isParticipante(false);
+        }
+        console.log("ola mundo")
+    }
+
+    const formatarData = (data) => {
+        const date = new Date(data);
+        return date.toLocaleDateString("pt-BR");
+    }
+
+    if (!isAuth()) return;
 
     return (
         <>
-         <div style={{ display: "flex" }}>
-            <h1>Novo evento</h1>
-            <form onSubmit={ handleSubmit(publicar) }>
-                <div>
-                    <label>Titulo</label>
-                    <input type="text" name="titulo" { ...register("titulo", { required: true }) }/>
-                    <label>Descrição</label>
-                    <input type="text" name="descricao" { ...register("descricao", { required: true }) }/>
-                    <label>Horario</label>
-                    <input type="time" name="horario" { ...register("horario", { required: true }) }/>
-                    <label>Data</label>
-                    <input type="date" name="data_evento" { ...register("data_evento", { required: true }) }/>
-                </div>
-                <button type="submit">publicar</button>
-            </form>
-         </div>
+        <h1>Evento</h1>
+        <div>
+            <p>Título: { evento.titulo }</p>
+            <p>Descrição: { evento.descricao }</p>
+            <p>Data: { formatarData(evento.data_evento) }</p>
+            <p>Horário: { evento.horario }</p>
+            <p>Dono: { evento.dono?.apelido }</p>
+        </div>
+        { evento.dono?.usuarioId != usuarioAuth.usuarioId && !isParticipante && <button onClick={ () => participarEvento() }>participar</button> }
+        { evento.dono?.usuarioId != usuarioAuth.usuarioId && isParticipante && <button onClick={ () => sairEvento() }>sair</button> }
         </>
     );
 }

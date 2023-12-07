@@ -12,7 +12,8 @@ export default function Publicacao() {
         publicacaoId: null,
         curtidas: null,
         conteudo: "",
-        comentarios: []
+        comentarios: [],
+        usuario: {}
     });
     const router = useRouter();
     const { register, handleSubmit } = useForm();

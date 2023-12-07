@@ -17,7 +17,12 @@ export default function Home() {
     if (!isAuth()) return router.push("/autenticacao");
 
     const res = await httpPy.get(`/publicacoes`);
-    const { data } = res;      
+
+    console.log(res);
+    let { data } = res;   
+    
+    if (!data) data = [];
+    
     setpublicacoes(data);
   }
 
@@ -56,7 +61,7 @@ export default function Home() {
             {
               publicacoes?.map(publicacao => {
                 return (
-                  <Publicacao publicacao={ publicacao } />
+                  <Publicacao key={ publicacao.publicacaoId } publicacao={ publicacao } />
                 )
               })
             }

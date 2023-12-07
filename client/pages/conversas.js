@@ -7,7 +7,7 @@ import WebsocketService from "../src/services/websocket.service";
 
 export default function Conversas() {
 
-    const { usuarioAuth } = useContext(AuthContext);
+    const { usuarioAuth, isAuth } = useContext(AuthContext);
     const [websocket, setWebsocket] = useState(null);
     const [receiver, setReceiver] = useState(-1);
     const [text, setText] = useState("");
@@ -21,9 +21,7 @@ export default function Conversas() {
 
         if (!router.isReady) return;
 
-        console.log(usuarioAuth.usuarioId);
-
-        if (usuarioAuth.usuarioId == undefined) return;
+        if (!isAuth()) router.push("/autenticacao");
 
         const client = new WebsocketService(`ws://localhost:8080/${usuarioAuth.usuarioId}`);      
 
@@ -109,7 +107,7 @@ export default function Conversas() {
 
     const joinChat = (event) => {
         const receiverId = event.target.id;
-        
+        console.log("ESTOU AQUI PORRAAAAA");
         if (receiverId == receiver) return;
         
         setConversation([]);
@@ -127,17 +125,19 @@ export default function Conversas() {
         websocket.send(data);
     }
 
+    if (!isAuth()) return;
+
     return (
         <>
             <h1>Conversas</h1>
             <div style={{ display: "flex" }}>
-                <section>
-                    <h2>Amigos</h2>
+                <section style={{ marginRight: "5rem" }}>
+                <h2>Amigos</h2>
                     {
-                        amigos?.map(({ id, amigoId }) => {
+                        amigos?.map(({ id, amigoId, apelido }) => {
                             return (
                                 <ul key={ id }>
-                                    <li onClick={ joinChat } id={ amigoId } style={{ background: notificacoes[amigoId] && receiver != amigoId ? "purple" : "" }}>Amigo { amigoId }</li>
+                                    <li onClick={ joinChat } id={ amigoId } style={{ background: notificacoes[amigoId] && receiver != amigoId ? "purple" : "" }}>{ apelido }</li>
                                 </ul>
                             )
                         })
@@ -149,14 +149,18 @@ export default function Conversas() {
                             <div></div>
                             :
                             <>
-                                <div>
+                                <div style={{ display: "flex", flexDirection: "column", width: 500 }}>
                                     {
                                         conversation?.map(el => {
                                             let background = "green";
+                                            let alignSelf = "flex-start";
 
-                                            if (el.senderId == usuarioAuth.usuarioId) background = "red"; 
+                                            if (el.senderId != usuarioAuth.usuarioId) {
+                                                background = "blue";
+                                                alignSelf = "flex-end";
+                                            }; 
                                             
-                                            return <div style={{ background }}>{ el.message }</div>
+                                            return <div style={{ background, alignSelf, width: 250 }}>{ el.message }</div>
                                         })
                                     }                           
                                 </div>

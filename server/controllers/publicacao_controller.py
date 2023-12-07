@@ -12,11 +12,9 @@ publicacao_repository = PublicacaoRepository()
 @bp.route("", methods=["GET"])
 def get_all():
     resultado = publicacao_repository.get_all()
-    if resultado:
-        resultado = [publicacao.to_dict() for publicacao in resultado]
-        return resultado, 200
-    else:
-        return [], 204
+    resultado = [publicacao.to_dict() for publicacao in resultado]
+    
+    return jsonify(resultado);
 
 @bp.route("/<int:publicacaoId>", methods=["GET"])
 def get(publicacaoId):

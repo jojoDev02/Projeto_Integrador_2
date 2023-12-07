@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { httpPy } from "../src/api";
+import AuthContext from "../src/contexts/auth_context";
 
 
 export default function Pesquisa() {
     const router = useRouter();
+    const { isAuth } = useContext(AuthContext);
     const [ resultado, setResultado ] = useState({});
 
     const pesquisar = async (criterio) => {
@@ -23,6 +25,7 @@ export default function Pesquisa() {
     useEffect(() => {
 
         if (!router.isReady) return;
+        if (!isAuth()) router.push("/autenticacao");
 
         const { p } = router.query;
         console.log("ola mundo");
@@ -32,6 +35,8 @@ export default function Pesquisa() {
             console.error(err);
         }
     }, [router]);
+
+    if (!isAuth()) return;
 
     return (
         <>

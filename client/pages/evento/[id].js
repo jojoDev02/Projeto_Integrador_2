@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { httpPy } from "../src/api";
-import AuthContext from "../src/contexts/auth_context";
+import { httpPy } from "../../src/api";
+import AuthContext from "../../src/contexts/auth_context";
 
 export default function Evento() {
     const { register, handleSubmit } = useForm();

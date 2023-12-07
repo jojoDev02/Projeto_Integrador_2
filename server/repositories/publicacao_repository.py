@@ -14,10 +14,15 @@ class PublicacaoRepository:
             raise NoResultFound("Publicação não encontrada.")
 
     def create(self, data):
-
         usuarioId = data["usuarioId"]
         conteudo = data["conteudo"]
-        publicacao = Publicacao(conteudo=conteudo, usuarioId=usuarioId)
+        
+        if "comunidadeId" in data:
+            comunidadeId = data["comunidadeId"];
+            
+            publicacao = Publicacao(conteudo=conteudo, usuarioId=usuarioId, comunidadeId=comunidadeId)
+        else:
+            publicacao = Publicacao(conteudo=conteudo, usuarioId=usuarioId)            
 
         db_session.add(publicacao)
         db_session.commit()

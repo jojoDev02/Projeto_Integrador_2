@@ -50,7 +50,7 @@ export default function Usuario() {
     
     const adicionarAmigo = async () => {
         try {
-            const res = await httpPy.post("/amizades", { receptorId: usuario.id, solicitanteId: usuarioAuth.id, status: "pendente" });
+            const res = await httpPy.post("/amizades", { receptorId: usuario.usuarioId, solicitanteId: usuarioAuth.usuarioId, status: "pendente" });
             console.log(res);
 
             const { conteudo } = res.data;
@@ -80,7 +80,7 @@ export default function Usuario() {
     const aceitarPedido = async () => {
         try {   
         
-            const res = await httpPy.put(`/amizades/${amizade.id}`, {solicitanteId: usuario.id, receptorId: usuarioAuth.id, status: "confirmada"});
+            const res = await httpPy.put(`/amizades/${amizade.id}`, {solicitanteId: usuario.usuarioId, receptorId: usuarioAuth.usuarioId, status: "confirmada"});
             console.log(res);
 
             if (res.statusCode == 200) {
@@ -94,7 +94,7 @@ export default function Usuario() {
     }
     
     const verificarAmizade = async (amigoId) => {
-        const res = await httpPy.get(`/usuarios/${usuarioAuth.id}/amizades/${amigoId}`);
+        const res = await httpPy.get(`/usuarios/${usuarioAuth.usuarioId}/amizades/${amigoId}`);
         console.log(res)
         
         if (res.statusCode == 200) {
@@ -104,6 +104,8 @@ export default function Usuario() {
             console.log(amizade);
         }
     }
+
+    if (!isAuth()) return;
     
     return (
         <div>
@@ -111,10 +113,10 @@ export default function Usuario() {
             <div>{ usuario?.nome }</div>
 
            {
-                usuarioAuth.id != usuario.id ?
+                usuarioAuth.usuarioId != usuario.usuarioId ?
                     amizade?.status ?
                         amizade.status == 1 ?
-                            amizade.solicitanteId == usuario.id ?
+                            amizade.solicitanteId == usuario.usuarioId ?
                                 <button onClick={ aceitarPedido }>~ Aceitar pedido</button>
                                 :
                                 <button>~ Pedido enviado</button>

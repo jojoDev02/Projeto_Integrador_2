@@ -53,14 +53,8 @@ def register():
     jwtToken = jwtInstance.encode(message, key, alg="HS256");
     
     user = repository.create(data);
-    userFormated = {
-        "id": user.usuarioId, 
-        "email": user.email, 
-        "apelido": user.apelido,
-        "tipo": user.tipo.value
-    };
     
     return jsonify({
         "mensagem": "Usuário cadastrado.",
-        "conteudo": { "token": jwtToken, "usuario": userFormated }
+        "conteudo": { "token": jwtToken, "usuario": user.to_dict() }
     }), 201

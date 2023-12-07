@@ -40,9 +40,11 @@ def update(id):
     except Exception as e:
         return jsonify(str(e)), 404;
     
+    amizade = amizade.to_dict();
+    
     return jsonify({
         "mensagem": "Amizade confirmada",
-        "conteudo": amizade.to_dict()
+        "conteudo": amizade
     }), 200;
     
 

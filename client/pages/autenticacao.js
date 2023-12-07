@@ -51,6 +51,7 @@ export default function Autenticacao() {
 
                 <input type="submit" value="Enviar"/>
             </form>
-        </>
+            <button onClick={ () => router.push("/cadastro") }>Criar conta</button>
+        </> 
     );
 }

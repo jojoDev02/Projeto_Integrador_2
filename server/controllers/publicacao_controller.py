@@ -13,9 +13,11 @@ comentario_repository = ComentarioRepository()
 
 @bp.route("", methods=["GET"])
 def get_all():
+    
+    
     resultado = publicacao_repository.get_all()
     resultado = [publicacao.to_dict() for publicacao in resultado]
-    
+        
     return jsonify(resultado);
 
 @bp.route("/<int:publicacaoId>", methods=["GET"])

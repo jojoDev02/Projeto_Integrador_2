@@ -26,6 +26,8 @@ class PublicacaoRepository:
 
         db_session.add(publicacao)
         db_session.commit()
+        
+        return publicacao;
 
     def add_like(self, id):
         publicacao = self.fetch_by_id(id)

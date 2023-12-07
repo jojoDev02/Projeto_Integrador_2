@@ -28,4 +28,5 @@ app.register_blueprint(comunidade_controller.bp);
 app.register_blueprint(evento_controller.bp);
 app.register_blueprint(publicacao_controller.bp);
 
+
 init_db();

@@ -97,12 +97,12 @@ Este projeto utiliza o banco de dados relacional **MySQL** na versão **8.0.34**
 
 ## Gráfico de vazão da funcionalidade CHAT ##
 
-![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_01_vazao_chat.png)
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_03_concorrencia_chat.png)
 
 
 ## Gráfico de concorrência da funcionalidade CHAT ##
 
-![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/test_03_concorrencia_chat.png)
+![image](https://github.com/jojoDev02/Projeto_Integrador_2/blob/main/images/chat_concorrencia.png?raw=true)
 
 
 
